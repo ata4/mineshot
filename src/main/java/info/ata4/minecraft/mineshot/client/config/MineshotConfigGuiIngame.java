@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import org.apache.commons.io.FileUtils;
+import org.lwjgl.util.Dimension;
 
 /**
  * Settings screen for Minema.
@@ -168,7 +169,10 @@ public class MineshotConfigGuiIngame extends GuiScreen {
         fileSize = I18n.format("mineshot.gui.filesize", FileUtils.byteCountToDisplaySize(captureSize));
         
         warnings.clear();
-        if (captureWidth > config.maxViewportDims.getWidth() || captureHeight > config.maxViewportDims.getHeight()) {
+        
+        Dimension maxViewportDims = MineshotConfig.getMaxViewportDims();
+        
+        if (captureWidth > maxViewportDims.getWidth() || captureHeight > maxViewportDims.getHeight()) {
             warnings.add(I18n.format("mineshot.gui.warn.tiled"));
             warnings.add(I18n.format("mineshot.gui.warn.shaders"));
             warnings.add(I18n.format("mineshot.gui.warn.gui"));

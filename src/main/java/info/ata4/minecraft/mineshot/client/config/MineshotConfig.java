@@ -29,12 +29,23 @@ public class MineshotConfig extends ConfigContainer {
     // maximum size that the Targa format supports
     public static final int MAX_TARGA_SIZE = 0xffff;
     
+    public static Dimension getMaxViewportDims() {
+        // get viewport dimension limits
+        IntBuffer dims = BufferUtils.createIntBuffer(16);
+        glGetInteger(GL_MAX_VIEWPORT_DIMS, dims);
+        dims.flip();
+
+        if (dims.remaining() >= 2) {
+            return new Dimension(dims.get(), dims.get());
+        } else {
+            return new Dimension(4096, 4096); // optimistic defaults
+        }
+    }
+    
     public final ConfigInteger captureWidth = new ConfigInteger(3840, 1, MAX_TARGA_SIZE);
     public final ConfigInteger captureHeight = new ConfigInteger(2160, 1, MAX_TARGA_SIZE);
     public final ConfigBoolean captureTiled = new ConfigBoolean(false);
     
-    public final Dimension maxViewportDims;
-
     public MineshotConfig(Configuration config) {
         super(config);
         
@@ -43,12 +54,5 @@ public class MineshotConfig extends ConfigContainer {
         register(captureWidth, "captureWidth", Configuration.CATEGORY_GENERAL);
         register(captureHeight, "captureHeight", Configuration.CATEGORY_GENERAL);
         register(captureTiled, "captureTiled", Configuration.CATEGORY_GENERAL);
-        
-        // get viewport dimension limits
-        IntBuffer dims = BufferUtils.createIntBuffer(16);
-        glGetInteger(GL_MAX_VIEWPORT_DIMS, dims);
-        dims.flip();
-
-        maxViewportDims = new Dimension(dims.get(), dims.get());
     }
 }
