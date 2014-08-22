@@ -25,11 +25,14 @@ mineshot.gui.warn.gui=Benutzeroberfläche kann nicht aufgenommen werden!
 mineshot.gui.err.toolarge.targa=Zu groß für das Targa Format!
 
 # config
-mineshot.config.captureWidth=Width
-mineshot.config.captureWidth.tooltip=Screenshot Breite
+mineshot.config.captureWidth=Breite
+mineshot.config.captureWidth.tooltip=Breite des aufzunehmenden Screenshots
 
-mineshot.config.captureHeight=Height
-mineshot.config.captureHeight.tooltip=Screenshot Höhe
+mineshot.config.captureHeight=Höhe
+mineshot.config.captureHeight.tooltip=Höhe des aufzunehmenden Screenshots
 
-mineshot.config.captureTiled=Kachelrendering
-mineshot.config.captureTiled.tooltip=Der Screenshot wird in mehreren kleinen Kacheln gerendert wenn akiviert. Dadurch können wesentlich größere Screenshots aufgenommen als normal möglich. Allerdings funktionieren dann manche Shader nicht richtig und die Benutzeroberfläche ist unsichtbar.
+mineshot.config.captureTiled=Kachelgrafik
+mineshot.config.captureTiled.tooltip=Der Screenshot aus mehreren kleineren Screenshots zusammengesetzt. Dadurch können wesentlich größere Screenshots aufgenommen werden als normal möglich. Allerdings funktionieren dann manche Shader nicht mehr richtig und die Benutzeroberfläche ist unsichtbar.
+
+mineshot.config.preloadChunks=Chunk-Preloading
+mineshot.config.preloadChunks.tooltip=Alle sichtbaren Chunks werden vollständig geladen bevor der Screenshot erstellt wird.

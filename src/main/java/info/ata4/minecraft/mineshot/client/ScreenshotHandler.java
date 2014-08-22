@@ -19,11 +19,13 @@ import info.ata4.minecraft.mineshot.client.capture.task.RenderTickTask;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfigGuiIngame;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
+import info.ata4.minecraft.mineshot.util.reflection.RenderGlobalAccessor;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.settings.KeyBinding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +71,9 @@ public class ScreenshotHandler {
                 } else {
                     task = new CaptureTask(config, taskFile);
                 }
+                if (config.preloadChunks.get()) {
+                    preloadChunks();
+                }
             }
         }
     }
@@ -90,8 +95,16 @@ public class ScreenshotHandler {
             task = null;
         }
     }
-
     
+    private void preloadChunks() {
+        WorldRenderer[] worldRenderers = RenderGlobalAccessor.getWorldRenderers(MC.renderGlobal);
+        for (WorldRenderer worldRenderer : worldRenderers) {
+            if (worldRenderer.isInFrustum && worldRenderer.needsUpdate) {
+                worldRenderer.updateRenderer(MC.renderViewEntity);
+            }
+        }
+    }
+
     private File getScreenshotFile() {
         File dir = new File(MC.mcDataDir, "screenshots");
         if (!dir.exists()) {

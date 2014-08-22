@@ -31,5 +31,8 @@ mineshot.config.captureWidth.tooltip=Screenshot capture width
 mineshot.config.captureHeight=Height
 mineshot.config.captureHeight.tooltip=Screenshot capture height
 
-mineshot.config.captureTiled=Tiled rendering
-mineshot.config.captureTiled.tooltip=Renders the screenshot in multiple smaller tiles when activated. This allows much larger screenshots to be captured than usually possible, but causes problems with shaders and also disables the GUI.
+mineshot.config.captureTiled=Tiled Rendering
+mineshot.config.captureTiled.tooltip=Compose screenshots from multiple smaller screenshots. This allows much larger screenshots to be captured than usually possible, but causes problems with shaders and also disables the GUI.
+
+mineshot.config.preloadChunks=Chunk Preloading
+mineshot.config.preloadChunks.tooltip=Fully load all visible chunks before capturing the screenshot.

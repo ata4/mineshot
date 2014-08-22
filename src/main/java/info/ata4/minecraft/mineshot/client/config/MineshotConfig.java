@@ -45,6 +45,7 @@ public class MineshotConfig extends ConfigContainer {
     public final ConfigInteger captureWidth = new ConfigInteger(3840, 1, MAX_TARGA_SIZE);
     public final ConfigInteger captureHeight = new ConfigInteger(2160, 1, MAX_TARGA_SIZE);
     public final ConfigBoolean captureTiled = new ConfigBoolean(false);
+    public final ConfigBoolean preloadChunks = new ConfigBoolean(true);
     
     public MineshotConfig(Configuration config) {
         super(config);
@@ -54,5 +55,6 @@ public class MineshotConfig extends ConfigContainer {
         register(captureWidth, "captureWidth", Configuration.CATEGORY_GENERAL);
         register(captureHeight, "captureHeight", Configuration.CATEGORY_GENERAL);
         register(captureTiled, "captureTiled", Configuration.CATEGORY_GENERAL);
+        register(preloadChunks, "preloadChunks", Configuration.CATEGORY_GENERAL);
     }
 }
