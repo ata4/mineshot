@@ -1,0 +1,35 @@
+# keys
+key.categories.mineshot=Mineshot
+
+key.mineshot.capture=Riesiger Screenshot
+key.mineshot.ortho.toggle=Kameramodus wechseln
+key.mineshot.ortho.zoom_in=Kamera reinzoomen
+key.mineshot.ortho.zoom_out=Kamera rauszoomen
+key.mineshot.ortho.rotate_l=Kamera nach links
+key.mineshot.ortho.rotate_r=Kamera nach rechts
+key.mineshot.ortho.rotate_u=Kamera nach oben
+key.mineshot.ortho.rotate_d=Kamera nach unten
+key.mineshot.ortho.rotate_t=Kamera Draufsicht
+key.mineshot.ortho.rotate_f=Kamera Vorderansicht
+key.mineshot.ortho.rotate_s=Kamera Seitenansicht
+key.mineshot.ortho.clip=Kamera Clippingdistanz ändern
+
+mineshot.orthomp=Orthographische Perspektive nicht verfügbar im Mehrspieler-Modus
+
+# gui
+mineshot.gui.filesize=Dateigröße: %s
+mineshot.gui.title=Mineshot Einstellungen
+mineshot.gui.warn.tiled=Kachelrendering erforderlich!
+mineshot.gui.warn.shaders=Pixel-Shader funktionieren mglw. nicht richtig!
+mineshot.gui.warn.gui=Benutzeroberfläche kann nicht aufgenommen werden!
+mineshot.gui.err.toolarge.targa=Zu groß für das Targa Format!
+
+# config
+mineshot.config.captureWidth=Width
+mineshot.config.captureWidth.tooltip=Screenshot Breite
+
+mineshot.config.captureHeight=Height
+mineshot.config.captureHeight.tooltip=Screenshot Höhe
+
+mineshot.config.captureTiled=Kachelrendering
+mineshot.config.captureTiled.tooltip=Der Screenshot wird in mehreren kleinen Kacheln gerendert wenn akiviert. Dadurch können wesentlich größere Screenshots aufgenommen als normal möglich. Allerdings funktionieren dann manche Shader nicht richtig und die Benutzeroberfläche ist unsichtbar.

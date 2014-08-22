@@ -1,0 +1,9 @@
+# NetBeans and Gradle temp dirs
+/minecraft/
+/build/
+/.gradle/
+/.nb-gradle/
+/.nb-gradle-properties
+
+# Other
+/private/

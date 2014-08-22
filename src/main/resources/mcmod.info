@@ -1,0 +1,10 @@
+[
+{
+  "modid": "Mineshot",
+  "name": "Mineshot",
+  "description": "A revamped version of Notch's huge screenshot function.",
+  "version": "${version}",
+  "url": "http://www.minecraftforum.net/topic/827863-",
+  "authorList": [ "Barracuda" ]
+}
+]
