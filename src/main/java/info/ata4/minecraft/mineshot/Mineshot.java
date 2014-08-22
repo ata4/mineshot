@@ -21,7 +21,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import info.ata4.minecraft.mineshot.client.OrthoViewHandler;
 import info.ata4.minecraft.mineshot.client.ScreenshotHandler;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
-import info.ata4.minecraft.mineshot.profiler.ProfilerEventManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -69,15 +69,12 @@ public class Mineshot {
     
     @EventHandler
     public void onInit(FMLInitializationEvent evt) {
-        ProfilerEventManager.initClient();
-        
         ScreenshotHandler sch = new ScreenshotHandler(config);
         FMLCommonHandler.instance().bus().register(sch);
-        ProfilerEventManager.bus().register(sch);
         
         OrthoViewHandler ovh = new OrthoViewHandler();
         FMLCommonHandler.instance().bus().register(ovh);
-        ProfilerEventManager.bus().register(ovh);
+        MinecraftForge.EVENT_BUS.register(ovh);
         
         FMLCommonHandler.instance().bus().register(this);
     }

@@ -13,13 +13,13 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
-import info.ata4.minecraft.mineshot.profiler.ProfilerEvent;
+import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -122,56 +122,58 @@ public class OrthoViewHandler {
     }
     
     @SubscribeEvent
-    public void onProfiling(ProfilerEvent.Client evt) {        
-        if (enable && !evt.isEnd() && evt.getSection().endsWith("frustrum")) {
-            // disable in multiplayer
-            // Of course, programmers could just delete this check and abuse the
-            // orthographic camera, but at least the official build won't support it
-            if (!MC.isSingleplayer()) {
-                enable = false;
-                ChatUtils.print("mineshot.orthomp");
-                return;
-            }
-            
-            float width = zoom * (MC.displayWidth / (float) MC.displayHeight);
-            float height = zoom;
+    public void onFogDensity(EntityViewRenderEvent.FogDensity evt) {
+        if (!enable) {
+            return;
+        }
+        
+        // disable in multiplayer
+        // Of course, programmers could just delete this check and abuse the
+        // orthographic camera, but at least the official build won't support it
+        if (!MC.isSingleplayer()) {
+            enable = false;
+            ChatUtils.print("mineshot.orthomp");
+            return;
+        }
 
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
+        float width = zoom * (MC.displayWidth / (float) MC.displayHeight);
+        float height = zoom;
 
-            double cameraZoom = EntityRendererAccessor.getCameraZoom(MC.entityRenderer);
-            double cameraOfsX = EntityRendererAccessor.getCameraOffsetX(MC.entityRenderer);
-            double cameraOfsY = EntityRendererAccessor.getCameraOffsetY(MC.entityRenderer);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
 
-            if (cameraZoom != 1) {
-                glTranslated(cameraOfsX, -cameraOfsY, 0);
-                glScaled(cameraZoom, cameraZoom, 1);
-            }
+        double cameraZoom = EntityRendererAccessor.getCameraZoom(MC.entityRenderer);
+        double cameraOfsX = EntityRendererAccessor.getCameraOffsetX(MC.entityRenderer);
+        double cameraOfsY = EntityRendererAccessor.getCameraOffsetY(MC.entityRenderer);
 
-            glOrtho(-width, width, -height, height, -clip, clip);
-            
-            if (freeCam) {
-                // rotate the orthographic camera with the player view
-                xRot = MC.thePlayer.rotationPitch;
-                yRot = MC.thePlayer.rotationYaw - 180;
-            }
+        if (cameraZoom != 1) {
+            glTranslated(cameraOfsX, -cameraOfsY, 0);
+            glScaled(cameraZoom, cameraZoom, 1);
+        }
 
-            // set camera rotation
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-            glRotatef(xRot, 1, 0, 0);
-            glRotatef(yRot, 0, 1, 0);
+        glOrtho(-width, width, -height, height, -clip, clip);
 
-            // fix particle rotation
-            if (!freeCam) {
-                float pitch = xRot;
-                float yaw = yRot + 180;
-                ActiveRenderInfo.rotationX = MathHelper.cos(yaw * (float) Math.PI / 180f);
-                ActiveRenderInfo.rotationZ = MathHelper.sin(yaw * (float) Math.PI / 180f);
-                ActiveRenderInfo.rotationYZ = -ActiveRenderInfo.rotationZ * MathHelper.sin(pitch * (float) Math.PI / 180f);
-                ActiveRenderInfo.rotationXY = ActiveRenderInfo.rotationX * MathHelper.sin(pitch * (float) Math.PI / 180f);
-                ActiveRenderInfo.rotationXZ = MathHelper.cos(pitch * (float) Math.PI / 180f);
-            }
+        if (freeCam) {
+            // rotate the orthographic camera with the player view
+            xRot = MC.thePlayer.rotationPitch;
+            yRot = MC.thePlayer.rotationYaw - 180;
+        }
+
+        // set camera rotation
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glRotatef(xRot, 1, 0, 0);
+        glRotatef(yRot, 0, 1, 0);
+
+        // fix particle rotation
+        if (!freeCam) {
+            float pitch = xRot;
+            float yaw = yRot + 180;
+            ActiveRenderInfo.rotationX = MathHelper.cos(yaw * (float) Math.PI / 180f);
+            ActiveRenderInfo.rotationZ = MathHelper.sin(yaw * (float) Math.PI / 180f);
+            ActiveRenderInfo.rotationYZ = -ActiveRenderInfo.rotationZ * MathHelper.sin(pitch * (float) Math.PI / 180f);
+            ActiveRenderInfo.rotationXY = ActiveRenderInfo.rotationX * MathHelper.sin(pitch * (float) Math.PI / 180f);
+            ActiveRenderInfo.rotationXZ = MathHelper.cos(pitch * (float) Math.PI / 180f);
         }
     }
 }
