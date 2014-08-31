@@ -33,7 +33,7 @@ public class OrthoViewHandler {
     
     private static final Minecraft MC = Minecraft.getMinecraft();
     private static final String KEY_CATEGORY = "key.categories.mineshot";
-    private static final float ZOOM_STEP = 0.1f;
+    private static final float ZOOM_STEP = 0.5f;
     private static final float ROTATE_STEP = 15;
     private static final int CLIP_STEP = 4;
     
