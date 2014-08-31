@@ -12,7 +12,6 @@ package info.ata4.minecraft.mineshot.client;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
@@ -74,18 +73,6 @@ public class OrthoViewHandler {
         ClientRegistry.registerKeyBinding(keyClip);
     }
     
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent evt) {
-        if (evt.phase == TickEvent.Phase.END) {
-            return;
-        }
-        
-        if (keyZoomIn.getIsKeyPressed()) {
-            zoom *= 1 - ZOOM_STEP;
-        } else if (keyZoomOut.getIsKeyPressed()) {
-            zoom *= 1 + ZOOM_STEP;
-        } 
-    }
     
     private long getElapsedTime(){
     	long now = System.currentTimeMillis();
@@ -97,18 +84,24 @@ public class OrthoViewHandler {
     
 	@SubscribeEvent
 	public void renderWorldLastEvent(RenderWorldLastEvent evt) {
-		double elapsed = getElapsedTime() * 0.001; //1 unit per second
+		double elapsed = getElapsedTime() * 0.001; // 1 unit per second
+		if (keyZoomIn.getIsKeyPressed()) {
+			zoom *= 1 - ZOOM_STEP * elapsed;
+		}
+		if (keyZoomOut.getIsKeyPressed()) {
+			zoom *= 1 + ZOOM_STEP * elapsed;
+		}
 		if (keyRotateL.getIsKeyPressed()) {
-			yRot += ROTATE_STEP*elapsed;
+			yRot += ROTATE_STEP * elapsed;
 		}
 		if (keyRotateR.getIsKeyPressed()) {
-			yRot -= ROTATE_STEP*elapsed;
+			yRot -= ROTATE_STEP * elapsed;
 		}
 		if (keyRotateU.getIsKeyPressed()) {
-			xRot += ROTATE_STEP*elapsed;
+			xRot += ROTATE_STEP * elapsed;
 		}
 		if (keyRotateD.getIsKeyPressed()) {
-			xRot -= ROTATE_STEP*elapsed;
+			xRot -= ROTATE_STEP * elapsed;
 		}
 
 	}
