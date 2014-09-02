@@ -1,0 +1,38 @@
+# keys
+key.categories.mineshot=Mineshot
+
+key.mineshot.capture=Zrób dużego screena
+key.mineshot.ortho.toggle=Zmiana trybu kamery
+key.mineshot.ortho.zoom_in=Powiększ
+key.mineshot.ortho.zoom_out=Zmniejsz
+key.mineshot.ortho.rotate_l=Obróć w prawo
+key.mineshot.ortho.rotate_r=Obróć w lewo
+key.mineshot.ortho.rotate_u=Obróć do góry
+key.mineshot.ortho.rotate_d=Obróć w dół
+key.mineshot.ortho.rotate_t=Widok z góry
+key.mineshot.ortho.rotate_f=Widok z przodu
+key.mineshot.ortho.rotate_s=Widok z boku
+key.mineshot.ortho.clip=Zmień wielkość kadru
+
+mineshot.orthomp=Rzut ortograficzny nie jest dostępny w multiplayer
+
+# gui
+mineshot.gui.title=Ustawienia Mineshot
+mineshot.gui.filesize=Wielkość pliku: %s
+mineshot.gui.warn.tiled=Wymagane renderowanie kafelkowe!
+mineshot.gui.warn.shaders=Shadery mogą być zepsute!
+mineshot.gui.warn.gui=GUI nie może być przechwycone!
+mineshot.gui.err.toolarge.targa=Za duży rozmiar pliku dla formatu Targa!
+
+# config
+mineshot.config.captureWidth=Szerokość
+mineshot.config.captureWidth.tooltip=Szerokość screenshota
+
+mineshot.config.captureHeight=Wysokość
+mineshot.config.captureHeight.tooltip=Wysokość screenshota
+
+mineshot.config.captureTiled=Renderowanie Kafelkowe
+mineshot.config.captureTiled.tooltip=Skleja zrzut ekranu z wielu mniejszych. Pozwala to na robienie screenów o wiele większych, niż normalnie, ale powoduje problemy z shaderami.
+
+mineshot.config.preloadChunks=Wstępne ładowanie chunków
+mineshot.config.preloadChunks.tooltip=Ładuje cały świat przed zrobieniem zrzutu ekranu.
