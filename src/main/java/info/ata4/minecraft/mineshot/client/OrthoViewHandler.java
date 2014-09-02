@@ -58,7 +58,6 @@ public class OrthoViewHandler {
     
     private long lastframe = 0;
     
-
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
         ClientRegistry.registerKeyBinding(keyZoomIn);
@@ -72,42 +71,42 @@ public class OrthoViewHandler {
         ClientRegistry.registerKeyBinding(keyRotateS);
         ClientRegistry.registerKeyBinding(keyClip);
     }
-    
-    
-    private long getElapsedTime(){
-    	long now = System.currentTimeMillis();
-    	long elapsed = now-lastframe;
-    	lastframe = now;
-    	if(elapsed>2000) return 0;
-    	return elapsed;
+
+    private long getElapsedTime() {
+        long now = System.currentTimeMillis();
+        long elapsed = now - lastframe;
+        lastframe = now;
+        if (elapsed > 2000) {
+            return 0;
+        }
+        return elapsed;
     }
     
-	@SubscribeEvent
-	public void renderWorldLastEvent(RenderWorldLastEvent evt) {
-		double elapsed = getElapsedTime() * 0.001; // 1 unit per second
-		if (keyZoomIn.getIsKeyPressed()) {
-			zoom *= 1 - ZOOM_STEP * elapsed;
-		}
-		if (keyZoomOut.getIsKeyPressed()) {
-			zoom *= 1 + ZOOM_STEP * elapsed;
-		}
-		if (keyRotateL.getIsKeyPressed()) {
-			yRot += ROTATE_STEP * elapsed;
-		}
-		if (keyRotateR.getIsKeyPressed()) {
-			yRot -= ROTATE_STEP * elapsed;
-		}
-		if (keyRotateU.getIsKeyPressed()) {
-			xRot += ROTATE_STEP * elapsed;
-		}
-		if (keyRotateD.getIsKeyPressed()) {
-			xRot -= ROTATE_STEP * elapsed;
-		}
-
-	}
+    @SubscribeEvent
+    public void renderWorldLastEvent(RenderWorldLastEvent evt) {
+        double elapsed = getElapsedTime() * 0.001; // 1 unit per second
+        if (keyZoomIn.getIsKeyPressed()) {
+            zoom *= 1 - ZOOM_STEP * elapsed;
+        }
+        if (keyZoomOut.getIsKeyPressed()) {
+            zoom *= 1 + ZOOM_STEP * elapsed;
+        }
+        if (keyRotateL.getIsKeyPressed()) {
+            yRot += ROTATE_STEP * elapsed;
+        }
+        if (keyRotateR.getIsKeyPressed()) {
+            yRot -= ROTATE_STEP * elapsed;
+        }
+        if (keyRotateU.getIsKeyPressed()) {
+            xRot += ROTATE_STEP * elapsed;
+        }
+        if (keyRotateD.getIsKeyPressed()) {
+            xRot -= ROTATE_STEP * elapsed;
+        }
+    }
+    
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
-    	
         if (keyToggle.isPressed()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
                 freeCam = !freeCam;
@@ -120,10 +119,7 @@ public class OrthoViewHandler {
                     clip = 512;
                 }
             } 
-        } 
-        /* else 
-        */
-        else if (keyRotateT.isPressed()) {
+        } else if (keyRotateT.isPressed()) {
             xRot = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? -90 : 90;
             yRot = 0;
         } else if (keyRotateF.isPressed()) {
