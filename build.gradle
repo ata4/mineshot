@@ -17,41 +17,31 @@ buildscript {
 
 apply plugin: 'forge'
 
-minecraft {
-    version = "1.7.10-10.13.0.1180"
-    runDir = "minecraft"
-}
-
 /*
  * Gets the version name from the latest Git tag
  */
-def getVersionName = { ->
+def getGitTag = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
         commandLine 'git', 'describe', '--tags'
         standardOutput = stdout
     }
-    return stdout.toString().trim() + "-" + minecraft.version
+    return stdout.toString().trim()
 }
 
-version = getVersionName()
+minecraft {
+    version = "1.7.10-10.13.0.1180"
+    runDir = "minecraft"
+}
+
+version =  "${getGitTag()}-${minecraft.version}"
 group = "info.ata4.minecraft.mineshot" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Mineshot"
 
-dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+// replace version placeholder in the main mod class
+minecraft {
+    replaceIn project.group.replace(".", "/") + "/${project.archivesBaseName}.java"
+    replace "@VERSION@", project.version
 }
 
 processResources {
@@ -60,7 +50,7 @@ processResources {
     inputs.property "mcversion", project.minecraft.version
 
     // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
+    from (sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
                 
         // replace version and mcversion
@@ -68,7 +58,7 @@ processResources {
     }
         
     // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
+    from (sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
 }
