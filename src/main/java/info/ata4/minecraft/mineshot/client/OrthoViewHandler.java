@@ -72,19 +72,7 @@ public class OrthoViewHandler {
         ClientRegistry.registerKeyBinding(keyRotateS);
         ClientRegistry.registerKeyBinding(keyClip);
     }
-    
-    @SubscribeEvent
-    public void renderWorldLastEvent(RenderTickEvent evt) {
-        if (evt.phase != RenderTickEvent.Phase.START) {
-            return;
-        }
-        
-        double elapsed = getElapsedTime() * UPDATE_STEPS_PER_SECOND * 0.001;
-        if (!modifierKeyPressed()) {
-            updateZoomAndRotation(elapsed);
-        }
-    }
-    
+
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
         boolean mod = modifierKeyPressed();
@@ -130,16 +118,6 @@ public class OrthoViewHandler {
     private boolean modifierKeyPressed() {
         return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
     }
-
-    private long getElapsedTime() {
-        long now = System.currentTimeMillis();
-        long elapsed = now - lastframe;
-        lastframe = now;
-        if (elapsed > 2000) {
-            return 0;
-        }
-        return elapsed;
-    }
     
     private void updateZoomAndRotation(double multi) {
         if (keyZoomIn.getIsKeyPressed()) {
@@ -175,6 +153,20 @@ public class OrthoViewHandler {
             enable = false;
             ChatUtils.print("mineshot.orthomp");
             return;
+        }
+        
+        // update zoom and rotation
+        long now = System.currentTimeMillis();
+        long elapsed = now - lastframe;
+        lastframe = now;
+        
+        if (elapsed > 2000) {
+            elapsed = 0;
+        }
+        
+        double multi = elapsed * UPDATE_STEPS_PER_SECOND * 0.001;
+        if (!modifierKeyPressed()) {
+            updateZoomAndRotation(multi);
         }
 
         float width = zoom * (MC.displayWidth / (float) MC.displayHeight);
