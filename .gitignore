@@ -1,14 +1,17 @@
-/gradle/
-/bin/
+# Gradle
+/.gradle/
+
+# Eclipse
+/.settings/
 .classpath
 .project
-/.settings/
-# NetBeans and Gradle temp dirs
-/minecraft/
-/build/
-/.gradle/
+
+# NetBeans
 /.nb-gradle/
 /.nb-gradle-properties
 
 # Other
+/build/
+/bin/
 /private/
+/minecraft/

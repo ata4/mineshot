@@ -12,6 +12,7 @@ package info.ata4.minecraft.mineshot.client;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,6 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
@@ -36,6 +36,7 @@ public class OrthoViewHandler {
     private static final float ZOOM_STEP = 0.5f;
     private static final float ROTATE_STEP = 15;
     private static final int CLIP_STEP = 4;
+    private static final int UPDATE_STEPS_PER_SECOND = 2;
     
     private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_NUMPAD5, KEY_CATEGORY);
     private final KeyBinding keyZoomIn = new KeyBinding("key.mineshot.ortho.zoom_in", Keyboard.KEY_ADD, KEY_CATEGORY);
@@ -58,7 +59,6 @@ public class OrthoViewHandler {
     
     private long lastframe = 0;
     
-
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
         ClientRegistry.registerKeyBinding(keyZoomIn);
@@ -72,44 +72,13 @@ public class OrthoViewHandler {
         ClientRegistry.registerKeyBinding(keyRotateS);
         ClientRegistry.registerKeyBinding(keyClip);
     }
-    
-    
-    private long getElapsedTime(){
-    	long now = System.currentTimeMillis();
-    	long elapsed = now-lastframe;
-    	lastframe = now;
-    	if(elapsed>2000) return 0;
-    	return elapsed;
-    }
-    
-	@SubscribeEvent
-	public void renderWorldLastEvent(RenderWorldLastEvent evt) {
-		double elapsed = getElapsedTime() * 0.001; // 1 unit per second
-		if (keyZoomIn.getIsKeyPressed()) {
-			zoom *= 1 - ZOOM_STEP * elapsed;
-		}
-		if (keyZoomOut.getIsKeyPressed()) {
-			zoom *= 1 + ZOOM_STEP * elapsed;
-		}
-		if (keyRotateL.getIsKeyPressed()) {
-			yRot += ROTATE_STEP * elapsed;
-		}
-		if (keyRotateR.getIsKeyPressed()) {
-			yRot -= ROTATE_STEP * elapsed;
-		}
-		if (keyRotateU.getIsKeyPressed()) {
-			xRot += ROTATE_STEP * elapsed;
-		}
-		if (keyRotateD.getIsKeyPressed()) {
-			xRot -= ROTATE_STEP * elapsed;
-		}
 
-	}
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
-    	
-        if (keyToggle.isPressed()) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+        boolean mod = modifierKeyPressed();
+        
+        if (keyToggle.getIsKeyPressed()) {
+            if (mod) {
                 freeCam = !freeCam;
             } else {
                 enable = !enable;
@@ -120,23 +89,54 @@ public class OrthoViewHandler {
                     clip = 512;
                 }
             } 
-        } 
-        /* else 
-        */
-        else if (keyRotateT.isPressed()) {
-            xRot = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? -90 : 90;
+        } else if (keyRotateT.getIsKeyPressed()) {
+            xRot = mod ? -90 : 90;
             yRot = 0;
-        } else if (keyRotateF.isPressed()) {
+        } else if (keyRotateF.getIsKeyPressed()) {
             xRot = 0;
-            yRot = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? -90 : 90;
-        } else if (keyRotateS.isPressed()) {
+            yRot = mod ? -90 : 90;
+        } else if (keyRotateS.getIsKeyPressed()) {
             xRot = 0;
-            yRot = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? 180 : 0;
-        } else if (keyClip.isPressed()) {
-            clip += Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ? CLIP_STEP : -CLIP_STEP;
+            yRot = mod ? 180 : 0;
+        } else if (keyClip.getIsKeyPressed()) {
+            clip += mod ? CLIP_STEP : -CLIP_STEP;
             if (clip <= 0) {
                 clip = CLIP_STEP;
             }
+        }
+
+        if (mod) {
+            // snap values to step units
+            xRot -= xRot % ROTATE_STEP;
+            yRot -= yRot % ROTATE_STEP;
+            zoom -= zoom % ZOOM_STEP;
+            
+            updateZoomAndRotation(1);
+        }
+    }
+    
+    private boolean modifierKeyPressed() {
+        return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+    }
+    
+    private void updateZoomAndRotation(double multi) {
+        if (keyZoomIn.getIsKeyPressed()) {
+            zoom *= 1 - ZOOM_STEP * multi;
+        }
+        if (keyZoomOut.getIsKeyPressed()) {
+            zoom *= 1 + ZOOM_STEP * multi;
+        }
+        if (keyRotateL.getIsKeyPressed()) {
+            yRot += ROTATE_STEP * multi;
+        }
+        if (keyRotateR.getIsKeyPressed()) {
+            yRot -= ROTATE_STEP * multi;
+        }
+        if (keyRotateU.getIsKeyPressed()) {
+            xRot += ROTATE_STEP * multi;
+        }
+        if (keyRotateD.getIsKeyPressed()) {
+            xRot -= ROTATE_STEP * multi;
         }
     }
     
@@ -153,6 +153,20 @@ public class OrthoViewHandler {
             enable = false;
             ChatUtils.print("mineshot.orthomp");
             return;
+        }
+        
+        // update zoom and rotation
+        long now = System.currentTimeMillis();
+        long elapsed = now - lastframe;
+        lastframe = now;
+        
+        if (elapsed > 2000) {
+            elapsed = 0;
+        }
+        
+        double multi = elapsed * UPDATE_STEPS_PER_SECOND * 0.001;
+        if (!modifierKeyPressed()) {
+            updateZoomAndRotation(multi);
         }
 
         float width = zoom * (MC.displayWidth / (float) MC.displayHeight);
