@@ -1,7 +1,7 @@
 /*
- ** 2014 August 11
+ ** 2014 September 05
  **
- ** The author disclaims copyright to this source code.  In place of
+ ** The author disclaims copyright to this source code. In place of
  ** a legal notice, here is a blessing:
  **    May you do good and not evil.
  **    May you find forgiveness for yourself and forgive others.
@@ -9,52 +9,56 @@
  */
 package info.ata4.minecraft.mineshot.util.config;
 
-import java.util.Collections;
-import java.util.Set;
 import net.minecraftforge.common.config.Property;
-import org.apache.commons.lang3.Validate;
 
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class ConfigEnum extends ConfigString {
-
-    private final Set<String> choices;
+public class ConfigEnum<T extends Enum> extends ConfigValue<T> {
     
-    public ConfigEnum(String value, Set<String> choices) {
+    private final Class<T> type;
+    private final String[] validValues;
+
+    public ConfigEnum(T value) {
         super(value);
         
-        Validate.notEmpty(choices);
+        this.type = (Class<T>) value.getClass();
         
-        if (!choices.contains(value)) {
-            throw new IllegalArgumentException();
+        T[] values = type.getEnumConstants();
+        validValues = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            validValues[i] = enumToString(values[i]);
         }
-        
-        this.choices = Collections.unmodifiableSet(choices);
     }
     
-    public Set<String> getChoices() {
-        return choices;
+    private String enumToString(T e) {
+        return e.name().toLowerCase();
+    }
+    
+    private T stringToEnum(String name) {
+        return (T) T.valueOf(type, name.toUpperCase());
     }
     
     @Override
     public Property.Type getPropType() {
         return Property.Type.STRING;
     }
-    
+
     @Override
-    public void set(String value) {
-        if (!choices.contains(value)) {
-            super.set(getDefault());
-        } else {
-            super.set(value);
+    public void importProp(Property prop) {
+        try {
+            set(stringToEnum(prop.getString()));
+        } catch (IllegalArgumentException ex) {
+            set(getDefault());
         }
     }
-    
+
     @Override
     public void exportProp(Property prop) {
-        super.exportProp(prop);
-        prop.setValidValues(getChoices().toArray(new String[]{}));
+        prop.set(enumToString(get()));
+        prop.setDefaultValue(enumToString(getDefault()));
+        prop.setValidValues(validValues);
     }
+
 }
