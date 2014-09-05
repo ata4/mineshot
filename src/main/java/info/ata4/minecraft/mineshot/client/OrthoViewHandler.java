@@ -12,7 +12,8 @@ package info.ata4.minecraft.mineshot.client;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
@@ -59,7 +60,9 @@ public class OrthoViewHandler {
     private float xRot = 30;
     private float yRot = -45;
     
-    private long lastframe = 0;
+    private long lasttick = 0;
+    private double lastpartial = 0;
+    private long currenttick = 0;
 	
     
     public OrthoViewHandler() {
@@ -160,12 +163,31 @@ public class OrthoViewHandler {
         }
 
     }
+    private double getElapsedTime(double partial){
+    	long elapsedticks = currenttick-lasttick;
+    	double elapsedseconds = 0.05;
+    	if(elapsedticks==0){
+    		elapsedseconds *= partial-lastpartial;
+    	}else{
+    		elapsedseconds *= (elapsedticks-1) + (1-lastpartial) + partial;
+    	}
+    	lasttick = currenttick;
+    	lastpartial = partial;
+    	return elapsedseconds;
+    }
+    @SubscribeEvent
+    public void onTick(ClientTickEvent evt) {
+    	if(evt.phase != Phase.START) return;
+    	currenttick++;
+    }
     
     @SubscribeEvent
     public void onFogDensity(EntityViewRenderEvent.FogDensity evt) {
         if (!enable) {
             return;
         }
+        
+        
         // disable in multiplayer
         // Of course, programmers could just delete this check and abuse the
         // orthographic camera, but at least the official build won't support it
@@ -176,15 +198,9 @@ public class OrthoViewHandler {
         }
         
         // update zoom and rotation
-        long now = System.currentTimeMillis();
-        long elapsed = now - lastframe;
-        lastframe = now;
+        double elapsed = getElapsedTime(evt.renderPartialTicks);
         
-        if (elapsed > 2000) {
-            elapsed = 0;
-        }
-        
-        double multi = elapsed * UPDATE_STEPS_PER_SECOND * 0.001;
+        double multi = elapsed * UPDATE_STEPS_PER_SECOND;
         if (!modifierKeyPressed()) {
             updateZoomAndRotation(multi);
         }
