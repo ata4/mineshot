@@ -55,16 +55,16 @@ public class OrthoViewHandler {
     private boolean enable;
     private boolean freeCam;
     private boolean cut;
-    private float zoom = 8;
-    private float clip = 512;
-    private float xRot = 30;
-    private float yRot = -45;
+    
+    private float zoom;
+    private float clip;
+    private float xRot;
+    private float yRot;
     
     private long lasttick = 0;
     private double lastpartial = 0;
     private long currenttick = 0;
-	
-    
+
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
         ClientRegistry.registerKeyBinding(keyZoomIn);
@@ -77,15 +77,17 @@ public class OrthoViewHandler {
         ClientRegistry.registerKeyBinding(keyRotateF);
         ClientRegistry.registerKeyBinding(keyRotateS);
         ClientRegistry.registerKeyBinding(keyClip);
+        
+        reset();
     }
-
-    
-    private void reset(){
-        xRot = 30;
-        yRot = -45;
+ 
+    private void reset() {
         zoom = 8;
         clip = 512;
+        xRot = 30;
+        yRot = -45;
     }
+
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
         boolean mod = modifierKeyPressed();
