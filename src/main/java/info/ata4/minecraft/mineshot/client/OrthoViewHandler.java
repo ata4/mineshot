@@ -12,7 +12,8 @@ package info.ata4.minecraft.mineshot.client;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
@@ -36,6 +37,7 @@ public class OrthoViewHandler {
     private static final float ZOOM_STEP = 0.5f;
     private static final float ROTATE_STEP = 15;
     private static final int CLIP_STEP = 4;
+    private static final float CLIP_SPEED = 0.5f;
     private static final int UPDATE_STEPS_PER_SECOND = 2;
     
     private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_NUMPAD5, KEY_CATEGORY);
@@ -52,12 +54,16 @@ public class OrthoViewHandler {
     
     private boolean enable;
     private boolean freeCam;
+    private boolean cut;
     private float zoom = 8;
     private float clip = 512;
     private float xRot = 30;
     private float yRot = -45;
     
-    private long lastframe = 0;
+    private long lasttick = 0;
+    private double lastpartial = 0;
+    private long currenttick = 0;
+	
     
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
@@ -73,6 +79,13 @@ public class OrthoViewHandler {
         ClientRegistry.registerKeyBinding(keyClip);
     }
 
+    
+    private void reset(){
+        xRot = 30;
+        yRot = -45;
+        zoom = 8;
+        clip = 512;
+    }
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
         boolean mod = modifierKeyPressed();
@@ -83,25 +96,24 @@ public class OrthoViewHandler {
             } else {
                 enable = !enable;
                 if (enable) {
-                    xRot = 30;
-                    yRot = -45;
-                    zoom = 8;
-                    clip = 512;
+                	
                 }
             } 
         } else if (keyRotateT.getIsKeyPressed()) {
+            reset();
             xRot = mod ? -90 : 90;
             yRot = 0;
         } else if (keyRotateF.getIsKeyPressed()) {
+        	reset();
             xRot = 0;
             yRot = mod ? -90 : 90;
         } else if (keyRotateS.getIsKeyPressed()) {
+            reset();
             xRot = 0;
             yRot = mod ? 180 : 0;
         } else if (keyClip.getIsKeyPressed()) {
-            clip += mod ? CLIP_STEP : -CLIP_STEP;
-            if (clip <= 0) {
-                clip = CLIP_STEP;
+            if(mod){
+            	cut = !cut;
             }
         }
 
@@ -110,7 +122,10 @@ public class OrthoViewHandler {
             xRot -= xRot % ROTATE_STEP;
             yRot -= yRot % ROTATE_STEP;
             zoom -= zoom % ZOOM_STEP;
-            
+            clip -= clip % CLIP_STEP;
+            if (clip <= 0) {
+        		clip = CLIP_STEP;
+        	}
             updateZoomAndRotation(1);
         }
     }
@@ -120,24 +135,50 @@ public class OrthoViewHandler {
     }
     
     private void updateZoomAndRotation(double multi) {
-        if (keyZoomIn.getIsKeyPressed()) {
+        if (keyClip.getIsKeyPressed()){
+        	if (keyZoomIn.getIsKeyPressed()) {
+        		clip *= 1 + CLIP_SPEED * multi;
+        	}else if (keyZoomOut.getIsKeyPressed()) {
+        		clip *= 1 - CLIP_SPEED * multi;
+        	}
+        	if (clip <= 0) {
+        		clip = CLIP_STEP;
+        	}
+        }else if (keyZoomIn.getIsKeyPressed()) {
             zoom *= 1 - ZOOM_STEP * multi;
-        }
-        if (keyZoomOut.getIsKeyPressed()) {
+        }else if (keyZoomOut.getIsKeyPressed()) {
             zoom *= 1 + ZOOM_STEP * multi;
         }
+        
         if (keyRotateL.getIsKeyPressed()) {
             yRot += ROTATE_STEP * multi;
-        }
-        if (keyRotateR.getIsKeyPressed()) {
+        }else if (keyRotateR.getIsKeyPressed()) {
             yRot -= ROTATE_STEP * multi;
         }
+        
         if (keyRotateU.getIsKeyPressed()) {
             xRot += ROTATE_STEP * multi;
-        }
-        if (keyRotateD.getIsKeyPressed()) {
+        }else if (keyRotateD.getIsKeyPressed()) {
             xRot -= ROTATE_STEP * multi;
         }
+
+    }
+    private double getElapsedTime(double partial){
+    	long elapsedticks = currenttick-lasttick;
+    	double elapsedseconds = 0.05;
+    	if(elapsedticks==0){
+    		elapsedseconds *= partial-lastpartial;
+    	}else{
+    		elapsedseconds *= (elapsedticks-1) + (1-lastpartial) + partial;
+    	}
+    	lasttick = currenttick;
+    	lastpartial = partial;
+    	return elapsedseconds;
+    }
+    @SubscribeEvent
+    public void onTick(ClientTickEvent evt) {
+    	if(evt.phase != Phase.START) return;
+    	currenttick++;
     }
     
     @SubscribeEvent
@@ -146,25 +187,20 @@ public class OrthoViewHandler {
             return;
         }
         
+        
         // disable in multiplayer
         // Of course, programmers could just delete this check and abuse the
         // orthographic camera, but at least the official build won't support it
-        if (!MC.isSingleplayer()) {
+        if (false && !MC.isSingleplayer()) {
             enable = false;
             ChatUtils.print("mineshot.orthomp");
             return;
         }
         
         // update zoom and rotation
-        long now = System.currentTimeMillis();
-        long elapsed = now - lastframe;
-        lastframe = now;
+        double elapsed = getElapsedTime(evt.renderPartialTicks);
         
-        if (elapsed > 2000) {
-            elapsed = 0;
-        }
-        
-        double multi = elapsed * UPDATE_STEPS_PER_SECOND * 0.001;
+        double multi = elapsed * UPDATE_STEPS_PER_SECOND;
         if (!modifierKeyPressed()) {
             updateZoomAndRotation(multi);
         }
@@ -184,7 +220,7 @@ public class OrthoViewHandler {
             glScaled(cameraZoom, cameraZoom, 1);
         }
 
-        glOrtho(-width, width, -height, height, -clip, clip);
+        glOrtho(-width, width, -height, height, cut?-2:-clip, clip);
 
         if (freeCam) {
             // rotate the orthographic camera with the player view
