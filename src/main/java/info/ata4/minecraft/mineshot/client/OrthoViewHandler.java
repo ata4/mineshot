@@ -36,7 +36,6 @@ public class OrthoViewHandler {
     private static final String KEY_CATEGORY = "key.categories.mineshot";
     private static final float ZOOM_STEP = 0.5f;
     private static final float ROTATE_STEP = 15;
-    private static final int CLIP_STEP = 4;
     private static final int UPDATE_TICK_DIVISOR = 40;
     
     private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_NUMPAD5, KEY_CATEGORY);
@@ -53,10 +52,9 @@ public class OrthoViewHandler {
     
     private boolean enabled;
     private boolean freeCam;
-    private boolean cut;
+    private boolean clip;
     
     private float zoom;
-    private float clip;
     private float xRot;
     private float yRot;
     
@@ -80,8 +78,10 @@ public class OrthoViewHandler {
     }
  
     private void reset() {
+        freeCam = false;
+        clip = false;
+        
         zoom = 8;
-        clip = 512;
         xRot = 30;
         yRot = -45;
         tick = 0;
@@ -134,6 +134,8 @@ public class OrthoViewHandler {
             } else {
                 toggle();
             } 
+        } else if (keyClip.getIsKeyPressed()) {
+            clip = !clip;
         } else if (keyRotateT.getIsKeyPressed()) {
             xRot = mod ? -90 : 90;
             yRot = 0;
@@ -143,10 +145,6 @@ public class OrthoViewHandler {
         } else if (keyRotateS.getIsKeyPressed()) {
             xRot = 0;
             yRot = mod ? 180 : 0;
-        } else if (keyClip.getIsKeyPressed()) {
-            if (mod) {
-                cut = !cut;
-            }
         }
 
         if (mod) {
@@ -154,29 +152,16 @@ public class OrthoViewHandler {
             xRot -= xRot % ROTATE_STEP;
             yRot -= yRot % ROTATE_STEP;
             zoom -= zoom % ZOOM_STEP;
-            clip -= clip % CLIP_STEP;
-            
-            if (clip <= 0) {
-                clip = CLIP_STEP;
-            }
             
             updateZoomAndRotation(1);
         }
     }
     
     private void updateZoomAndRotation(double multi) {
-        if (keyClip.getIsKeyPressed()) {
-            if (keyZoomIn.getIsKeyPressed()) {
-                clip *= 1 + CLIP_STEP * multi;
-            } else if (keyZoomOut.getIsKeyPressed()) {
-                clip *= 1 - CLIP_STEP * multi;
-            }
-        } else {
-            if (keyZoomIn.getIsKeyPressed()) {
-                zoom *= 1 - ZOOM_STEP * multi;
-            } else if (keyZoomOut.getIsKeyPressed()) {
-                zoom *= 1 + ZOOM_STEP * multi;
-            }
+        if (keyZoomIn.getIsKeyPressed()) {
+            zoom *= 1 - ZOOM_STEP * multi;
+        } else if (keyZoomOut.getIsKeyPressed()) {
+            zoom *= 1 + ZOOM_STEP * multi;
         }
         
         if (keyRotateL.getIsKeyPressed()) {
@@ -234,7 +219,7 @@ public class OrthoViewHandler {
             glScaled(cameraZoom, cameraZoom, 1);
         }
 
-        glOrtho(-width, width, -height, height, cut ? -2 : -clip, clip);
+        glOrtho(-width, width, -height, height, clip ? 0 : -9999, 9999);
 
         if (freeCam) {
             // rotate the orthographic camera with the player view
