@@ -32,6 +32,7 @@ import net.minecraftforge.common.config.Configuration;
 @Mod(
     modid = Mineshot.ID,
     name = Mineshot.NAME,
+    version = Mineshot.VERSION,
     useMetadata = true,
     guiFactory = "info.ata4.minecraft.mineshot.client.config.MineshotConfigGuiFactory"
 )
@@ -39,6 +40,7 @@ public class Mineshot {
     
     public static final String NAME = "Mineshot";
     public static final String ID = NAME;
+    public static final String VERSION = "@VERSION@";
     
     @Instance(ID)
     public static Mineshot instance;
