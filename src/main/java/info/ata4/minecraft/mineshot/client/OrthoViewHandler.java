@@ -36,7 +36,7 @@ public class OrthoViewHandler {
     private static final String KEY_CATEGORY = "key.categories.mineshot";
     private static final float ZOOM_STEP = 0.5f;
     private static final float ROTATE_STEP = 15;
-    private static final float SECONDS_PER_TICK = 1/20;
+    private static final float SECONDS_PER_TICK = 1f/20f;
     
     private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_NUMPAD5, KEY_CATEGORY);
     private final KeyBinding keyZoomIn = new KeyBinding("key.mineshot.ortho.zoom_in", Keyboard.KEY_ADD, KEY_CATEGORY);
