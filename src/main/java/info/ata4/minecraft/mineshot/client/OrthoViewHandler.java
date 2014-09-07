@@ -191,7 +191,7 @@ public class OrthoViewHandler {
         // disable in multiplayer
         // Of course, programmers could just delete this check and abuse the
         // orthographic camera, but at least the official build won't support it
-        if (!MC.isSingleplayer()) {
+        if (false && !MC.isSingleplayer()) {
             enable = false;
             ChatUtils.print("mineshot.orthomp");
             return;
