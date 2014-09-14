@@ -201,7 +201,7 @@ public class OrthoViewHandler {
         // update zoom and rotation
         if (!modifierKeyPressed()) {
             int ticksElapsed = tick - tickPrevious;
-            double elapsed = ticksElapsed+(evt.renderPartialTicks-partialPrevious);
+            double elapsed = ticksElapsed + (evt.renderPartialTicks - partialPrevious);
             elapsed *= SECONDS_PER_TICK;
             updateZoomAndRotation(elapsed);
             
