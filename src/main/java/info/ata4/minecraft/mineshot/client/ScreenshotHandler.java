@@ -9,10 +9,6 @@
  */
 package info.ata4.minecraft.mineshot.client;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import info.ata4.minecraft.mineshot.client.capture.task.CaptureTask;
 import info.ata4.minecraft.mineshot.client.capture.task.CaptureTiledTask;
 import info.ata4.minecraft.mineshot.client.capture.task.RenderTickTask;
@@ -27,6 +23,10 @@ import java.util.Date;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
@@ -71,9 +71,9 @@ public class ScreenshotHandler {
                 } else {
                     task = new CaptureTask(config, taskFile);
                 }
-                if (config.preloadChunks.get()) {
-                    preloadChunks();
-                }
+//                if (config.preloadChunks.get()) {
+//                    preloadChunks();
+//                }
             }
         }
     }
@@ -96,14 +96,14 @@ public class ScreenshotHandler {
         }
     }
     
-    private void preloadChunks() {
-        WorldRenderer[] worldRenderers = RenderGlobalAccessor.getWorldRenderers(MC.renderGlobal);
-        for (WorldRenderer worldRenderer : worldRenderers) {
-            if (worldRenderer.isInFrustum && worldRenderer.needsUpdate) {
-                worldRenderer.updateRenderer(MC.renderViewEntity);
-            }
-        }
-    }
+//    private void preloadChunks() {
+//        WorldRenderer[] worldRenderers = RenderGlobalAccessor.getWorldRenderers(MC.renderGlobal);
+//        for (WorldRenderer worldRenderer : worldRenderers) {
+//            if (worldRenderer.isInFrustum && worldRenderer.needsUpdate) {
+//                worldRenderer.updateRenderer(MC.renderViewEntity);
+//            }
+//        }
+//    }
 
     private File getScreenshotFile() {
         File dir = new File(MC.mcDataDir, "screenshots");

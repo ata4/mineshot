@@ -9,9 +9,9 @@
  */
 package info.ata4.minecraft.mineshot.util.reflection;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -9,7 +9,6 @@
  */
 package info.ata4.minecraft.mineshot.util.config;
 
-import cpw.mods.fml.client.config.IConfigElement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.config.IConfigElement;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;

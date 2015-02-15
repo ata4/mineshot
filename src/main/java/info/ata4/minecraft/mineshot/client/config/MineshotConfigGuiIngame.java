@@ -9,6 +9,7 @@
  */
 package info.ata4.minecraft.mineshot.client.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiButton;
@@ -51,12 +52,12 @@ public class MineshotConfigGuiIngame extends GuiScreen {
         buttonList.clear();
         buttonList.add(doneButton);
         
-        textFieldWidth = new GuiTextField(fontRendererObj, width / 2 - 80, 64, 64, 20);
+        textFieldWidth = new GuiTextField(0, fontRendererObj, width / 2 - 80, 64, 64, 20);
         textFieldWidth.setFocused(true);
         textFieldWidth.setMaxStringLength(6);
         textFieldWidth.setText(String.valueOf(config.captureWidth.get()));
         
-        textFieldHeight = new GuiTextField(fontRendererObj, width / 2, 64, 64, 20);
+        textFieldHeight = new GuiTextField(0, fontRendererObj, width / 2, 64, 64, 20);
         textFieldHeight.setMaxStringLength(6);
         textFieldHeight.setText(String.valueOf(config.captureHeight.get()));
         
@@ -119,10 +120,10 @@ public class MineshotConfigGuiIngame extends GuiScreen {
      * Called when the mouse is clicked.
      */
     @Override
-    protected void mouseClicked(int par1, int par2, int par3) {
-        super.mouseClicked(par1, par2, par3);
-        textFieldWidth.mouseClicked(par1, par2, par3);
-        textFieldHeight.mouseClicked(par1, par2, par3);
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseX, mouseButton);
+        textFieldWidth.mouseClicked(mouseX, mouseX, mouseButton);
+        textFieldHeight.mouseClicked(mouseX, mouseX, mouseButton);
     }
 
     /**

@@ -9,13 +9,13 @@
  */
 package info.ata4.minecraft.mineshot.client.capture.task;
 
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import info.ata4.minecraft.mineshot.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.mineshot.client.capture.FramebufferTiledWriter;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 /**
  *

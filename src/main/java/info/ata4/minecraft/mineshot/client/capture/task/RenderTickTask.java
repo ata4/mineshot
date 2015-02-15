@@ -9,7 +9,7 @@
  */
 package info.ata4.minecraft.mineshot.client.capture.task;
 
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 /**
  *

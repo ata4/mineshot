@@ -9,11 +9,6 @@
  */
 package info.ata4.minecraft.mineshot.client;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
@@ -21,6 +16,11 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.*;
@@ -130,21 +130,21 @@ public class OrthoViewHandler {
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
         boolean mod = modifierKeyPressed();
         
-        if (keyToggle.getIsKeyPressed()) {
+        if (keyToggle.isKeyDown()) {
             if (mod) {
                 freeCam = !freeCam;
             } else {
                 toggle();
             } 
-        } else if (keyClip.getIsKeyPressed()) {
+        } else if (keyClip.isKeyDown()) {
             clip = !clip;
-        } else if (keyRotateT.getIsKeyPressed()) {
+        } else if (keyRotateT.isKeyDown()) {
             xRot = mod ? -90 : 90;
             yRot = 0;
-        } else if (keyRotateF.getIsKeyPressed()) {
+        } else if (keyRotateF.isKeyDown()) {
             xRot = 0;
             yRot = mod ? -90 : 90;
-        } else if (keyRotateS.getIsKeyPressed()) {
+        } else if (keyRotateS.isKeyDown()) {
             xRot = 0;
             yRot = mod ? 180 : 0;
         }
@@ -160,21 +160,21 @@ public class OrthoViewHandler {
     }
     
     private void updateZoomAndRotation(double multi) {
-        if (keyZoomIn.getIsKeyPressed()) {
+        if (keyZoomIn.isKeyDown()) {
             zoom *= 1 - ZOOM_STEP * multi;
-        } else if (keyZoomOut.getIsKeyPressed()) {
+        } else if (keyZoomOut.isKeyDown()) {
             zoom *= 1 + ZOOM_STEP * multi;
         }
         
-        if (keyRotateL.getIsKeyPressed()) {
+        if (keyRotateL.isKeyDown()) {
             yRot += ROTATE_STEP * multi;
-        } else if (keyRotateR.getIsKeyPressed()) {
+        } else if (keyRotateR.isKeyDown()) {
             yRot -= ROTATE_STEP * multi;
         }
 
-        if (keyRotateU.getIsKeyPressed()) {
+        if (keyRotateU.isKeyDown()) {
             xRot += ROTATE_STEP * multi;
-        } else if (keyRotateD.getIsKeyPressed()) {
+        } else if (keyRotateD.isKeyDown()) {
             xRot -= ROTATE_STEP * multi;
         }
     }
@@ -240,13 +240,13 @@ public class OrthoViewHandler {
 
         // fix particle rotation
         if (!freeCam) {
-            float pitch = xRot;
-            float yaw = yRot + 180;
-            ActiveRenderInfo.rotationX = MathHelper.cos(yaw * (float) Math.PI / 180f);
-            ActiveRenderInfo.rotationZ = MathHelper.sin(yaw * (float) Math.PI / 180f);
-            ActiveRenderInfo.rotationYZ = -ActiveRenderInfo.rotationZ * MathHelper.sin(pitch * (float) Math.PI / 180f);
-            ActiveRenderInfo.rotationXY = ActiveRenderInfo.rotationX * MathHelper.sin(pitch * (float) Math.PI / 180f);
-            ActiveRenderInfo.rotationXZ = MathHelper.cos(pitch * (float) Math.PI / 180f);
+//            float pitch = xRot;
+//            float yaw = yRot + 180;
+//            ActiveRenderInfo.rotationX = MathHelper.cos(yaw * (float) Math.PI / 180f);
+//            ActiveRenderInfo.rotationZ = MathHelper.sin(yaw * (float) Math.PI / 180f);
+//            ActiveRenderInfo.rotationYZ = -ActiveRenderInfo.rotationZ * MathHelper.sin(pitch * (float) Math.PI / 180f);
+//            ActiveRenderInfo.rotationXY = ActiveRenderInfo.rotationX * MathHelper.sin(pitch * (float) Math.PI / 180f);
+//            ActiveRenderInfo.rotationXZ = MathHelper.cos(pitch * (float) Math.PI / 180f);
         }
     }
 }
