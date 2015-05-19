@@ -10,11 +10,10 @@
 package info.ata4.minecraft.mineshot.client;
 
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
+import info.ata4.minecraft.mineshot.util.reflection.ClippingHelperAccessor;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -61,7 +60,7 @@ public class OrthoViewHandler {
     private int tick;
     private int tickPrevious;
     private double partialPrevious;
-
+    
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
         ClientRegistry.registerKeyBinding(keyZoomIn);
@@ -105,6 +104,8 @@ public class OrthoViewHandler {
                 ChatUtils.print("mineshot.orthomp");
                 return;
             }
+
+            ClippingHelperAccessor.setCullingEnabled(false);
         }
         
         enabled = true;
@@ -112,6 +113,7 @@ public class OrthoViewHandler {
     
     public void disable() {
         enabled = false;
+        ClippingHelperAccessor.setCullingEnabled(true);
     }
     
     public void toggle() {
@@ -226,27 +228,16 @@ public class OrthoViewHandler {
 
         glOrtho(-width, width, -height, height, clip ? 0 : -9999, 9999);
 
+        // rotate the orthographic camera with the player view
         if (freeCam) {
-            // rotate the orthographic camera with the player view
             xRot = MC.thePlayer.rotationPitch;
             yRot = MC.thePlayer.rotationYaw - 180;
         }
-
+        
         // set camera rotation
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glRotatef(xRot, 1, 0, 0);
         glRotatef(yRot, 0, 1, 0);
-
-        // fix particle rotation
-        if (!freeCam) {
-//            float pitch = xRot;
-//            float yaw = yRot + 180;
-//            ActiveRenderInfo.rotationX = MathHelper.cos(yaw * (float) Math.PI / 180f);
-//            ActiveRenderInfo.rotationZ = MathHelper.sin(yaw * (float) Math.PI / 180f);
-//            ActiveRenderInfo.rotationYZ = -ActiveRenderInfo.rotationZ * MathHelper.sin(pitch * (float) Math.PI / 180f);
-//            ActiveRenderInfo.rotationXY = ActiveRenderInfo.rotationX * MathHelper.sin(pitch * (float) Math.PI / 180f);
-//            ActiveRenderInfo.rotationXZ = MathHelper.cos(pitch * (float) Math.PI / 180f);
-        }
     }
 }
