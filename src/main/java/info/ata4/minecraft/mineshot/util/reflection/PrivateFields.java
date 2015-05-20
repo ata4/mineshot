@@ -21,4 +21,9 @@ public interface PrivateFields {
     public static final String[] ENTITYRENDERER_CAMERA_YAW = new String[] {"cameraYaw", "field_78502_W"};
     public static final String[] ENTITYRENDERER_CAMERA_PITCH = new String[] {"cameraPitch", "field_78509_X"};
     public static final String[] CLIPPINGHELPERIMPL_INSTANCE = new String[] {"instance", "field_78563_e"};
+    public static final String[] ACTIVERENDERINFO_ROTATIONX = new String[]{"rotationX", "field_74588_d"};
+    public static final String[] ACTIVERENDERINFO_ROTATIONZ = new String[]{"rotationZ", "field_74586_f"};
+    public static final String[] ACTIVERENDERINFO_ROTATIONYZ = new String[]{"rotationYZ", "field_74587_g"};
+    public static final String[] ACTIVERENDERINFO_ROTATIONXZ = new String[]{"rotationXZ", "field_74589_e"};
+    public static final String[] ACTIVERENDERINFO_ROTATIONXY = new String[]{"rotationXY", "field_74596_h"};
 }

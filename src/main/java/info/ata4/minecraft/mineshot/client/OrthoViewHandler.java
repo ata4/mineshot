@@ -10,10 +10,13 @@
 package info.ata4.minecraft.mineshot.client;
 
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
+import info.ata4.minecraft.mineshot.util.reflection.ActiveRenderInfoAccessor;
 import info.ata4.minecraft.mineshot.util.reflection.ClippingHelperAccessor;
 import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -239,5 +242,16 @@ public class OrthoViewHandler {
         glLoadIdentity();
         glRotatef(xRot, 1, 0, 0);
         glRotatef(yRot, 0, 1, 0);
+        
+        // fix particle rotation
+        if (!freeCam) {
+            float pitch = xRot;
+            float yaw = yRot + 180;
+            ActiveRenderInfoAccessor.setRotationX(MathHelper.cos(yaw * (float) Math.PI / 180f));
+            ActiveRenderInfoAccessor.setRotationZ(MathHelper.sin(yaw * (float) Math.PI / 180f));
+            ActiveRenderInfoAccessor.setRotationYZ(-ActiveRenderInfo.getRotationZ() * MathHelper.sin(pitch * (float) Math.PI / 180f));
+            ActiveRenderInfoAccessor.setRotationXY(ActiveRenderInfo.getRotationX() * MathHelper.sin(pitch * (float) Math.PI / 180f));
+            ActiveRenderInfoAccessor.setRotationXZ(MathHelper.cos(pitch * (float) Math.PI / 180f));
+        }
     }
 }
