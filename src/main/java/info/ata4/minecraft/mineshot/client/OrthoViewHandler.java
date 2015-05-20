@@ -38,6 +38,7 @@ public class OrthoViewHandler {
     private static final String KEY_CATEGORY = "key.categories.mineshot";
     private static final float ZOOM_STEP = 0.5f;
     private static final float ROTATE_STEP = 15;
+    private static final float ROTATE_SPEED = 4;
     private static final float SECONDS_PER_TICK = 1f/20f;
     
     private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_NUMPAD5, KEY_CATEGORY);
@@ -167,19 +168,22 @@ public class OrthoViewHandler {
     private void updateZoomAndRotation(double multi) {
         if (keyZoomIn.isKeyDown()) {
             zoom *= 1 - ZOOM_STEP * multi;
-        } else if (keyZoomOut.isKeyDown()) {
+        }
+        if (keyZoomOut.isKeyDown()) {
             zoom *= 1 + ZOOM_STEP * multi;
         }
         
         if (keyRotateL.isKeyDown()) {
             yRot += ROTATE_STEP * multi;
-        } else if (keyRotateR.isKeyDown()) {
+        }
+        if (keyRotateR.isKeyDown()) {
             yRot -= ROTATE_STEP * multi;
         }
 
         if (keyRotateU.isKeyDown()) {
             xRot += ROTATE_STEP * multi;
-        } else if (keyRotateD.isKeyDown()) {
+        }
+        if (keyRotateD.isKeyDown()) {
             xRot -= ROTATE_STEP * multi;
         }
     }
@@ -207,7 +211,7 @@ public class OrthoViewHandler {
         if (!modifierKeyPressed()) {
             int ticksElapsed = tick - tickPrevious;
             double elapsed = ticksElapsed + (evt.renderPartialTicks - partialPrevious);
-            elapsed *= SECONDS_PER_TICK;
+            elapsed *= SECONDS_PER_TICK * ROTATE_SPEED;
             updateZoomAndRotation(elapsed);
             
             tickPrevious = tick;
