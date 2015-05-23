@@ -55,7 +55,7 @@ public class MineshotConfig extends ConfigContainer {
         register(captureWidth, "captureWidth", Configuration.CATEGORY_GENERAL);
         register(captureHeight, "captureHeight", Configuration.CATEGORY_GENERAL);
         register(captureTiled, "captureTiled", Configuration.CATEGORY_GENERAL);
-        register(preloadChunks, "preloadChunks", Configuration.CATEGORY_GENERAL);
+//        register(preloadChunks, "preloadChunks", Configuration.CATEGORY_GENERAL);
         
         update(true);
     }
