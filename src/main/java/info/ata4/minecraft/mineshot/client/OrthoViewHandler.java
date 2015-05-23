@@ -155,13 +155,13 @@ public class OrthoViewHandler {
             yRot = mod ? 180 : 0;
         }
 
-        if (mod) {
-            // snap values to step units
-            xRot -= xRot % ROTATE_STEP;
-            yRot -= yRot % ROTATE_STEP;
-            zoom -= zoom % ZOOM_STEP;
-            
+        if (mod) {            
             updateZoomAndRotation(1);
+            
+            // snap values to step units
+            xRot = Math.round(xRot / ROTATE_STEP) * ROTATE_STEP;
+            yRot = Math.round(yRot / ROTATE_STEP) * ROTATE_STEP;
+            zoom = Math.round(zoom / ZOOM_STEP) * ZOOM_STEP;
         }
     }
     
