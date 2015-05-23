@@ -116,8 +116,11 @@ public class OrthoViewHandler {
     }
     
     public void disable() {
+        if (enabled) {
+            ClippingHelperAccessor.setCullingEnabled(true);
+        }
+        
         enabled = false;
-        ClippingHelperAccessor.setCullingEnabled(true);
     }
     
     public void toggle() {
@@ -136,6 +139,7 @@ public class OrthoViewHandler {
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
         boolean mod = modifierKeyPressed();
         
+        // change perspecives, using modifier key for opposite sides
         if (keyToggle.isKeyDown()) {
             if (mod) {
                 freeCam = !freeCam;
@@ -155,6 +159,9 @@ public class OrthoViewHandler {
             yRot = mod ? 180 : 0;
         }
 
+        // update stepped rotation/zoom controls
+        // note: the smooth controls are handled in onFogDensity, since they need
+        // to be executed on every frame
         if (mod) {            
             updateZoomAndRotation(1);
             
@@ -190,11 +197,7 @@ public class OrthoViewHandler {
     
     @SubscribeEvent
     public void onTick(ClientTickEvent evt) {
-        if (!enabled) {
-            return;
-        }
-        
-        if (evt.phase != Phase.START) {
+        if (!enabled || evt.phase != Phase.START) {
             return;
         }
         
@@ -221,6 +224,7 @@ public class OrthoViewHandler {
         float width = zoom * (MC.displayWidth / (float) MC.displayHeight);
         float height = zoom;
 
+        // override projection matrix
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
@@ -241,13 +245,13 @@ public class OrthoViewHandler {
             yRot = MC.thePlayer.rotationYaw - 180;
         }
         
-        // set camera rotation
+        // override camera view matrix
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         glRotatef(xRot, 1, 0, 0);
         glRotatef(yRot, 0, 1, 0);
         
-        // fix particle rotation
+        // fix particle rotation if the camera isn't following the player view
         if (!freeCam) {
             float pitch = xRot;
             float yaw = yRot + 180;
