@@ -72,12 +72,11 @@ public class Mineshot {
     @EventHandler
     public void onInit(FMLInitializationEvent evt) {
         ScreenshotHandler sch = new ScreenshotHandler(config);
-        FMLCommonHandler.instance().bus().register(sch);
+        MinecraftForge.EVENT_BUS.register(sch);
         
         OrthoViewHandler ovh = new OrthoViewHandler();
-        FMLCommonHandler.instance().bus().register(ovh);
         MinecraftForge.EVENT_BUS.register(ovh);
         
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }
