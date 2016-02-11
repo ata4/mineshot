@@ -36,7 +36,6 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     private final int widthTiled;
     private final int heightTiled;
     
-    private boolean advancedOpengl;
     private boolean hideGUI;
     
     public FramebufferTiledWriter(File file, FramebufferCapturer fbc, int width, int height) throws FileNotFoundException, IOException {
@@ -47,10 +46,6 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     }
 
     private void modifySettings() {
-        // some chunks disappear while occlusion culling is active
-//        advancedOpengl = MC.gameSettings.advancedOpengl;
-//        MC.gameSettings.advancedOpengl = false;
-
         // GUI will appear on each tile, so disable it
         hideGUI = MC.gameSettings.hideGUI;
         MC.gameSettings.hideGUI = true;
@@ -66,7 +61,6 @@ public class FramebufferTiledWriter extends FramebufferWriter {
 
     private void restoreSettings() {
         MC.gameSettings.hideGUI = hideGUI;
-//        MC.gameSettings.advancedOpengl = advancedOpengl;
 
         // enable entity frustum culling
         if (MC.theWorld != null) {
