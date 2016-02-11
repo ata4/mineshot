@@ -111,6 +111,9 @@ public class FramebufferTiledWriter extends FramebufferWriter {
             FileChannel fc = raf.getChannel();
             fc.write(bbHeader);
             
+            long nanoTime = System.nanoTime();
+            float partialTicks = timer == null ? 0 : timer.renderPartialTicks;
+            
             for (int y = 0; y < numTilesY; y++) {
                 for (int x = 0; x < numTilesX; x++) {
                     // clip the captured frame if too big
@@ -126,7 +129,7 @@ public class FramebufferTiledWriter extends FramebufferWriter {
                     EntityRendererAccessor.setCameraOffsetY(entityRenderer, camOfsY);
 
                     // render the tile
-                    entityRenderer.updateCameraAndRender(timer == null ? 0 : timer.renderPartialTicks);
+                    entityRenderer.updateCameraAndRender(partialTicks, nanoTime);
 
                     // get framebuffer
                     fbc.capture();
