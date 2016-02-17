@@ -9,7 +9,6 @@
  */
 package info.ata4.minecraft.mineshot.util.reflection;
 
-import static info.ata4.minecraft.mineshot.util.reflection.PrivateFields.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -21,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class MinecraftAccessor {
+public class MinecraftAccessor implements PrivateFields {
 
     private static final Logger L = LogManager.getLogger();
     
