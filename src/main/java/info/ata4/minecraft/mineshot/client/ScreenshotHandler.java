@@ -13,7 +13,6 @@ import info.ata4.minecraft.mineshot.client.capture.task.CaptureTask;
 import info.ata4.minecraft.mineshot.client.capture.task.CaptureTiledTask;
 import info.ata4.minecraft.mineshot.client.capture.task.RenderTickTask;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
-import info.ata4.minecraft.mineshot.client.config.MineshotConfigGuiIngame;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import java.io.File;
 import java.text.DateFormat;
@@ -60,15 +59,11 @@ public class ScreenshotHandler {
         }
         
         if (keyCapture.isPressed()) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                MC.displayGuiScreen(new MineshotConfigGuiIngame(config));
+            taskFile = getScreenshotFile();
+            if (config.captureTiled.get()) {
+                task = new CaptureTiledTask(config, taskFile);
             } else {
-                taskFile = getScreenshotFile();
-                if (config.captureTiled.get()) {
-                    task = new CaptureTiledTask(config, taskFile);
-                } else {
-                    task = new CaptureTask(config, taskFile);
-                }
+                task = new CaptureTask(config, taskFile);
             }
         }
     }
