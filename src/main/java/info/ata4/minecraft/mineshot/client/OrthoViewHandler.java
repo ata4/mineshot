@@ -12,9 +12,9 @@ package info.ata4.minecraft.mineshot.client;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
 import info.ata4.minecraft.mineshot.util.reflection.ActiveRenderInfoAccessor;
 import info.ata4.minecraft.mineshot.util.reflection.ClippingHelperAccessor;
-import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -25,7 +25,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import org.lwjgl.input.Keyboard;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 
 /**
  * Key handler for keys that control the orthographic camera.
@@ -225,19 +226,10 @@ public class OrthoViewHandler {
         float height = zoom;
 
         // override projection matrix
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
+        GlStateManager.matrixMode(GL_PROJECTION);
+        GlStateManager.loadIdentity();
 
-        double cameraZoom = EntityRendererAccessor.getCameraZoom(MC.entityRenderer);
-        double cameraOfsX = EntityRendererAccessor.getCameraOffsetX(MC.entityRenderer);
-        double cameraOfsY = EntityRendererAccessor.getCameraOffsetY(MC.entityRenderer);
-
-        if (cameraZoom != 1) {
-            glTranslated(cameraOfsX, -cameraOfsY, 0);
-            glScaled(cameraZoom, cameraZoom, 1);
-        }
-
-        glOrtho(-width, width, -height, height, clip ? 0 : -9999, 9999);
+        Project.glOrtho(-width, width, -height, height, clip ? 0 : -9999, 9999);
 
         // rotate the orthographic camera with the player view
         if (freeCam) {
@@ -246,10 +238,10 @@ public class OrthoViewHandler {
         }
         
         // override camera view matrix
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glRotatef(xRot, 1, 0, 0);
-        glRotatef(yRot, 0, 1, 0);
+        GlStateManager.matrixMode(GL_MODELVIEW);
+        GlStateManager.loadIdentity();
+        GlStateManager.rotate(xRot, 1, 0, 0);
+        GlStateManager.rotate(yRot, 0, 1, 0);
         
         // fix particle rotation if the camera isn't following the player view
         if (!freeCam) {

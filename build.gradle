@@ -26,7 +26,7 @@ def getGitTag = { ->
 }
 
 minecraft {
-    version = "1.8.9-11.15.1.1739"
+    version = "1.8.9-11.15.1.1722"
     runDir = "minecraft"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -65,3 +65,15 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+// add core mod class path to manifest
+jar {
+    manifest {
+        attributes\
+            "FMLCorePlugin": "info.ata4.minecraft.mineshot.MineshotCore",
+            "FMLCorePluginContainsFMLMod" : "true"
+    }
+}
+
+// NetBeans' Gradle plugin refuses to pass --debug-jvm for whatever reason...
+runClient.debug true

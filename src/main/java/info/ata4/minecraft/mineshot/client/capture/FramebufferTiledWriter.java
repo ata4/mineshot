@@ -9,7 +9,8 @@
  */
 package info.ata4.minecraft.mineshot.client.capture;
 
-import info.ata4.minecraft.mineshot.util.reflection.EntityRendererAccessor;
+import info.ata4.minecraft.mineshot.client.Project;
+import info.ata4.minecraft.mineshot.util.reflection.ClippingHelperAccessor;
 import info.ata4.minecraft.mineshot.util.reflection.MinecraftAccessor;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,10 +18,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.Timer;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.util.Dimension;
@@ -36,8 +36,6 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     private final int widthTiled;
     private final int heightTiled;
     
-    private boolean hideGUI;
-    
     public FramebufferTiledWriter(File file, FramebufferCapturer fbc, int width, int height) throws FileNotFoundException, IOException {
         super(file, fbc);
         
@@ -46,29 +44,13 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     }
 
     private void modifySettings() {
-        // GUI will appear on each tile, so disable it
-        hideGUI = MC.gameSettings.hideGUI;
-        MC.gameSettings.hideGUI = true;
-
-        // disable entity frustum culling for all loaded entities
-        if (MC.theWorld != null) {
-            for (Entity ent : (List<Entity>) MC.theWorld.loadedEntityList) {
-                ent.ignoreFrustumCheck = true;
-                ent.renderDistanceWeight = 16;
-            }
-        }
+        ClippingHelperAccessor.setCullingEnabled(false);
+        GlStateManager.disableCull();
     }
 
     private void restoreSettings() {
-        MC.gameSettings.hideGUI = hideGUI;
-
-        // enable entity frustum culling
-        if (MC.theWorld != null) {
-            for (Entity ent : (List<Entity>) MC.theWorld.loadedEntityList) {
-                ent.ignoreFrustumCheck = false;
-                ent.renderDistanceWeight = 1;
-            }
-        }
+        ClippingHelperAccessor.setCullingEnabled(true);
+        GlStateManager.enableCull();
     }
     
     @Override
@@ -83,7 +65,8 @@ public class FramebufferTiledWriter extends FramebufferWriter {
 
         int numTilesX = (int) Math.ceil(tilesX);
         int numTilesY = (int) Math.ceil(tilesY);
-        double camZoom = tilesX <= tilesY ? tilesY : tilesX;
+        
+        Project.zoom = tilesX <= tilesY ? tilesY : tilesX;
         
         EntityRenderer entityRenderer = MC.entityRenderer;
         Timer timer = MinecraftAccessor.getTimer(MC);
@@ -115,13 +98,9 @@ public class FramebufferTiledWriter extends FramebufferWriter {
                     int tileHeight = Math.min(heightViewport, heightTiled - (heightViewport * y));
 
                     // update camera offset and zoom
-                    double camOfsX = (widthTiled - widthViewport - (widthViewport * x) * 2) / (double) widthViewport;
-                    double camOfsY = (heightTiled - heightViewport - (heightViewport * (tilesY - y - 1)) * 2) / (double) heightViewport;
-
-                    EntityRendererAccessor.setCameraZoom(entityRenderer, camZoom);
-                    EntityRendererAccessor.setCameraOffsetX(entityRenderer, camOfsX);
-                    EntityRendererAccessor.setCameraOffsetY(entityRenderer, camOfsY);
-
+                    Project.offsetX = (widthTiled - widthViewport - (widthViewport * x) * 2) / (double) widthViewport;
+                    Project.offsetY = (heightTiled - heightViewport - (heightViewport * (tilesY - y - 1)) * 2) / (double) heightViewport;
+                    
                     // render the tile
                     entityRenderer.updateCameraAndRender(partialTicks, nanoTime);
 
@@ -147,9 +126,9 @@ public class FramebufferTiledWriter extends FramebufferWriter {
             }
         } finally {
             // restore camera settings
-            EntityRendererAccessor.setCameraZoom(entityRenderer, 1);
-            EntityRendererAccessor.setCameraOffsetX(entityRenderer, 0);
-            EntityRendererAccessor.setCameraOffsetY(entityRenderer, 0);
+            Project.zoom = 1;
+            Project.offsetX = 0;
+            Project.offsetY = 0;
             
             // restore game settings
             restoreSettings();
