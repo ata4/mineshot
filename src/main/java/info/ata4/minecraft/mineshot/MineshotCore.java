@@ -11,12 +11,14 @@ package info.ata4.minecraft.mineshot;
 
 import java.util.Map;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
 /**
  * Mineshot core mod container class.
  * 
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
+@MCVersion(value = "1.8.9")
 public class MineshotCore implements IFMLLoadingPlugin {
 
     @Override

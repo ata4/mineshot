@@ -37,6 +37,10 @@ public class ToggleableClippingHelper extends ClippingHelperImpl {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+    
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     @Override
     public boolean isBoxInFrustum(double x1, double y1, double z1, double x2, double y2, double z2) {

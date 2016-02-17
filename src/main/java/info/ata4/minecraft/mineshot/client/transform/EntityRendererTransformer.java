@@ -9,54 +9,41 @@
  */
 package info.ata4.minecraft.mineshot.client.transform;
 
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.InstructionAdapter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class EntityRendererTransformer implements IClassTransformer {
+public class EntityRendererTransformer extends InvokeStaticRemapTransformer {
     
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] data) {
-        if (!transformedName.equals("net.minecraft.client.renderer.EntityRenderer")) {
-            return data;
-        }
+    public EntityRendererTransformer() {
+        remap(
+            "net/minecraft/client/renderer/EntityRenderer/*",
+            "org/lwjgl/util/glu/Project/gluPerspective",
+            "info/ata4/minecraft/mineshot/client/wrapper/Projection/perspective",
+            "(FFFF)V"
+        );
         
-        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        ClassVisitor classVisitor = new ClassVisitor(Opcodes.ASM5, classWriter) {
-            @Override
-            public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
-                MethodVisitor methodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
-
-                return new InstructionAdapter(api, methodVisitor) {
-                    @Override
-                    public void invokestatic(String owner, String name, String desc, boolean itf) {
-                        // redirect Project.gluPerspective
-                        if (owner.equals("org/lwjgl/util/glu/Project") && name.equals("gluPerspective")) {
-                            name = "perspective";
-                            owner = "info/ata4/minecraft/mineshot/client/wrapper/Projection";
-                        }
-                        
-                        // redirect GlStateManager.ortho
-                        if (owner.equals("net/minecraft/client/renderer/GlStateManager") && name.equals("ortho")) {
-                            owner = "info/ata4/minecraft/mineshot/client/wrapper/Projection";
-                        }
-                        
-                        super.invokestatic(owner, name, desc, itf);
-                    }
-                };
-            }
-        };
+        remap(
+            "net/minecraft/client/renderer/EntityRenderer/*",
+            "net/minecraft/client/renderer/GlStateManager/ortho",
+            "info/ata4/minecraft/mineshot/client/wrapper/Projection/ortho",
+            "(DDDDDD)V"
+        );
         
-        ClassReader classReader = new ClassReader(data);
-        classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
-        return classWriter.toByteArray();
+        remap(
+            "bfk/*",
+            "org/lwjgl/util/glu/Project/gluPerspective",
+            "info/ata4/minecraft/mineshot/client/wrapper/Projection/perspective",
+            "(FFFF)V"
+        );
+        
+        remap(
+            "bfk/*",
+            "bfl/a",
+            "info/ata4/minecraft/mineshot/client/wrapper/Projection/ortho",
+            "(DDDDDD)V"
+        );
     }
 }
