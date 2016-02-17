@@ -21,7 +21,10 @@ public class MineshotCore implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"info.ata4.minecraft.mineshot.client.transform.EntityRendererTransformer"};
+        return new String[] {
+            "info.ata4.minecraft.mineshot.client.transform.EntityRendererTransformer",
+            "info.ata4.minecraft.mineshot.client.transform.FrustumTransformer"
+        };
     }
 
     @Override

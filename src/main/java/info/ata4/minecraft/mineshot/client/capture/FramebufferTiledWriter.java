@@ -9,8 +9,8 @@
  */
 package info.ata4.minecraft.mineshot.client.capture;
 
-import info.ata4.minecraft.mineshot.client.Project;
-import info.ata4.minecraft.mineshot.util.reflection.ClippingHelperAccessor;
+import info.ata4.minecraft.mineshot.client.wrapper.Projection;
+import info.ata4.minecraft.mineshot.client.wrapper.ToggleableClippingHelper;
 import info.ata4.minecraft.mineshot.util.reflection.MinecraftAccessor;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +20,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.Timer;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.util.Dimension;
@@ -44,13 +43,11 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     }
 
     private void modifySettings() {
-        ClippingHelperAccessor.setCullingEnabled(false);
-        GlStateManager.disableCull();
+        ToggleableClippingHelper.getInstance().setEnabled(false);
     }
 
     private void restoreSettings() {
-        ClippingHelperAccessor.setCullingEnabled(true);
-        GlStateManager.enableCull();
+        ToggleableClippingHelper.getInstance().setEnabled(true);
     }
     
     @Override
@@ -66,7 +63,7 @@ public class FramebufferTiledWriter extends FramebufferWriter {
         int numTilesX = (int) Math.ceil(tilesX);
         int numTilesY = (int) Math.ceil(tilesY);
         
-        Project.zoom = tilesX <= tilesY ? tilesY : tilesX;
+        Projection.zoom = tilesX <= tilesY ? tilesY : tilesX;
         
         EntityRenderer entityRenderer = MC.entityRenderer;
         Timer timer = MinecraftAccessor.getTimer(MC);
@@ -98,8 +95,8 @@ public class FramebufferTiledWriter extends FramebufferWriter {
                     int tileHeight = Math.min(heightViewport, heightTiled - (heightViewport * y));
 
                     // update camera offset and zoom
-                    Project.offsetX = (widthTiled - widthViewport - (widthViewport * x) * 2) / (double) widthViewport;
-                    Project.offsetY = (heightTiled - heightViewport - (heightViewport * (tilesY - y - 1)) * 2) / (double) heightViewport;
+                    Projection.offsetX = (widthTiled - widthViewport - (widthViewport * x) * 2) / (double) widthViewport;
+                    Projection.offsetY = (heightTiled - heightViewport - (heightViewport * (tilesY - y - 1)) * 2) / (double) heightViewport;
                     
                     // render the tile
                     entityRenderer.updateCameraAndRender(partialTicks, nanoTime);
@@ -126,9 +123,9 @@ public class FramebufferTiledWriter extends FramebufferWriter {
             }
         } finally {
             // restore camera settings
-            Project.zoom = 1;
-            Project.offsetX = 0;
-            Project.offsetY = 0;
+            Projection.zoom = 1;
+            Projection.offsetX = 0;
+            Projection.offsetY = 0;
             
             // restore game settings
             restoreSettings();

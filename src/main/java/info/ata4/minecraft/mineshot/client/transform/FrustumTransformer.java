@@ -1,5 +1,5 @@
 /*
-** 2016 February 15
+** 2016 Februar 17
 **
 ** The author disclaims copyright to this source code. In place of
 ** a legal notice, here is a blessing:
@@ -21,11 +21,12 @@ import org.objectweb.asm.commons.InstructionAdapter;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class EntityRendererTransformer implements IClassTransformer {
-    
+public class FrustumTransformer implements IClassTransformer {
+
     @Override
     public byte[] transform(String name, String transformedName, byte[] data) {
-        if (!transformedName.equals("net.minecraft.client.renderer.EntityRenderer")) {
+        // modify Frustum class only
+        if (!transformedName.equals("net.minecraft.client.renderer.culling.Frustum")) {
             return data;
         }
         
@@ -34,19 +35,19 @@ public class EntityRendererTransformer implements IClassTransformer {
             @Override
             public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                 MethodVisitor methodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
+                
+                // modify constructor only
+                if (!name.equals("<init>")) {
+                    return methodVisitor;
+                }
 
+                // redirect getInstance to custom ClippingHelper implementation
                 return new InstructionAdapter(api, methodVisitor) {
                     @Override
-                    public void invokestatic(String owner, String name, String desc, boolean itf) {
-                        // redirect Project.gluPerspective
-                        if (owner.equals("org/lwjgl/util/glu/Project") && name.equals("gluPerspective")) {
-                            name = "perspective";
-                            owner = "info/ata4/minecraft/mineshot/client/wrapper/Projection";
-                        }
-                        
-                        // redirect GlStateManager.ortho
-                        if (owner.equals("net/minecraft/client/renderer/GlStateManager") && name.equals("ortho")) {
-                            owner = "info/ata4/minecraft/mineshot/client/wrapper/Projection";
+                    public void invokestatic(String owner, String name, String desc, boolean itf) {                        
+                        if (owner.equals("net/minecraft/client/renderer/culling/ClippingHelperImpl") && name.equals("getInstance")) {
+                            name = "getInstanceWrapper";
+                            owner = "info/ata4/minecraft/mineshot/client/wrapper/ToggleableClippingHelper";
                         }
                         
                         super.invokestatic(owner, name, desc, itf);
@@ -59,4 +60,5 @@ public class EntityRendererTransformer implements IClassTransformer {
         classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
         return classWriter.toByteArray();
     }
+    
 }

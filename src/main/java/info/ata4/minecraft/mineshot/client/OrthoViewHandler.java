@@ -10,8 +10,9 @@
 package info.ata4.minecraft.mineshot.client;
 
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
+import info.ata4.minecraft.mineshot.client.wrapper.Projection;
+import info.ata4.minecraft.mineshot.client.wrapper.ToggleableClippingHelper;
 import info.ata4.minecraft.mineshot.util.reflection.ActiveRenderInfoAccessor;
-import info.ata4.minecraft.mineshot.util.reflection.ClippingHelperAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +24,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
 import org.lwjgl.input.Keyboard;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
@@ -99,18 +99,17 @@ public class OrthoViewHandler {
     }
     
     public void enable() {
+        // disable in multiplayer
+        // Of course, programmers could just delete this check and abuse the
+        // orthographic camera, but at least the official build won't support it
+        if (!MC.isSingleplayer()) {
+            ChatUtils.print("mineshot.orthomp");
+            return;
+        }
+        
         if (!enabled) {
+            ToggleableClippingHelper.getInstance().setEnabled(false);
             reset();
-            
-            // disable in multiplayer
-            // Of course, programmers could just delete this check and abuse the
-            // orthographic camera, but at least the official build won't support it
-            if (!MC.isSingleplayer()) {
-                ChatUtils.print("mineshot.orthomp");
-                return;
-            }
-
-            ClippingHelperAccessor.setCullingEnabled(false);
         }
         
         enabled = true;
@@ -118,7 +117,7 @@ public class OrthoViewHandler {
     
     public void disable() {
         if (enabled) {
-            ClippingHelperAccessor.setCullingEnabled(true);
+            ToggleableClippingHelper.getInstance().setEnabled(true);
         }
         
         enabled = false;
@@ -229,7 +228,7 @@ public class OrthoViewHandler {
         GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.loadIdentity();
 
-        Project.glOrtho(-width, width, -height, height, clip ? 0 : -9999, 9999);
+        Projection.ortho(-width, width, -height, height, clip ? 0 : -9999, 9999);
 
         // rotate the orthographic camera with the player view
         if (freeCam) {
