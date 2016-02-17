@@ -10,8 +10,6 @@
 package info.ata4.minecraft.mineshot.util.reflection;
 
 import static info.ata4.minecraft.mineshot.util.reflection.PrivateFields.*;
-import static info.ata4.minecraft.mineshot.util.reflection.PrivateMethods.*;
-import java.lang.reflect.Method;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -36,15 +34,6 @@ public class MinecraftAccessor {
         } catch (Exception ex) {
             L.error("getTimer() failed", ex);
             return null;
-        }
-    }
-
-    public static void resize(Minecraft mc, int width, int height) {
-        try {
-            Method resize = ReflectionHelper.findMethod(Minecraft.class, mc, MINECRAFT_RESIZE, Integer.TYPE, Integer.TYPE);
-            resize.invoke(mc, width, height);
-        } catch (Exception ex) {
-            L.error("resize() failed", ex);
         }
     }
 }
