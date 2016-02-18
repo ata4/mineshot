@@ -75,5 +75,3 @@ jar {
     }
 }
 
-// NetBeans' Gradle plugin refuses to pass --debug-jvm for whatever reason...
-runClient.debug true
