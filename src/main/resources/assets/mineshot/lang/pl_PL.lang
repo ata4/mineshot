@@ -16,14 +16,6 @@ key.mineshot.ortho.clip=Zmień wielkość kadru
 
 mineshot.orthomp=Rzut ortograficzny nie jest dostępny w multiplayer
 
-# gui
-mineshot.gui.title=Ustawienia Mineshot
-mineshot.gui.filesize=Wielkość pliku: %s
-mineshot.gui.warn.tiled=Wymagane renderowanie kafelkowe!
-mineshot.gui.warn.shaders=Shadery mogą być zepsute!
-mineshot.gui.warn.gui=GUI nie może być przechwycone!
-mineshot.gui.err.toolarge.targa=Za duży rozmiar pliku dla formatu Targa!
-
 # config
 mineshot.config.captureWidth=Szerokość
 mineshot.config.captureWidth.tooltip=Szerokość screenshota

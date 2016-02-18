@@ -16,14 +16,6 @@ key.mineshot.ortho.clip=Camera Change Clipping
 
 mineshot.orthomp=Orthographic perspective not available in multiplayer
 
-# gui
-mineshot.gui.title=Mineshot Settings
-mineshot.gui.filesize=File size: %s
-mineshot.gui.warn.tiled=Tiled rendering required!
-mineshot.gui.warn.shaders=Pixel shaders may be broken!
-mineshot.gui.warn.gui=GUI can't be captured!
-mineshot.gui.err.toolarge.targa=Too large for the Targa file format!
-
 # config
 mineshot.config.captureWidth=Width
 mineshot.config.captureWidth.tooltip=Screenshot capture width
@@ -32,7 +24,7 @@ mineshot.config.captureHeight=Height
 mineshot.config.captureHeight.tooltip=Screenshot capture height
 
 mineshot.config.captureTiled=Tiled Rendering
-mineshot.config.captureTiled.tooltip=Compose screenshots from multiple smaller screenshots. This allows much larger screenshots to be captured than usually possible, but causes problems with shaders and also disables the GUI.
+mineshot.config.captureTiled.tooltip=Compose screenshots from multiple smaller screenshots. This allows much larger screenshots to be captured than usually possible, but may cause problems with shaders.
 
 mineshot.config.preloadChunks=Chunk Preloading
 mineshot.config.preloadChunks.tooltip=Fully load all visible chunks before capturing the screenshot.

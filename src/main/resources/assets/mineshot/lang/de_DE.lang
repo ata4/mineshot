@@ -14,15 +14,7 @@ key.mineshot.ortho.rotate_f=Kamera Vorderansicht
 key.mineshot.ortho.rotate_s=Kamera Seitenansicht
 key.mineshot.ortho.clip=Kamera Clippingdistanz ändern
 
-mineshot.orthomp=Orthographische Perspektive nicht verfügbar im Mehrspieler-Modus
-
-# gui
-mineshot.gui.filesize=Dateigröße: %s
-mineshot.gui.title=Mineshot Einstellungen
-mineshot.gui.warn.tiled=Kachelrendering erforderlich!
-mineshot.gui.warn.shaders=Pixel-Shader funktionieren mglw. nicht richtig!
-mineshot.gui.warn.gui=Benutzeroberfläche kann nicht aufgenommen werden!
-mineshot.gui.err.toolarge.targa=Zu groß für das Targa Format!
+mineshot.orthomp=Orthographische Perspektive im Mehrspieler-Modus nicht verfügbar
 
 # config
 mineshot.config.captureWidth=Breite
@@ -31,8 +23,8 @@ mineshot.config.captureWidth.tooltip=Breite des aufzunehmenden Screenshots
 mineshot.config.captureHeight=Höhe
 mineshot.config.captureHeight.tooltip=Höhe des aufzunehmenden Screenshots
 
-mineshot.config.captureTiled=Kachelgrafik
-mineshot.config.captureTiled.tooltip=Der Screenshot aus mehreren kleineren Screenshots zusammengesetzt. Dadurch können wesentlich größere Screenshots aufgenommen werden als normal möglich. Allerdings funktionieren dann manche Shader nicht mehr richtig und die Benutzeroberfläche ist unsichtbar.
+mineshot.config.captureTiled=Screenshots Kacheln
+mineshot.config.captureTiled.tooltip=Setze Screenshots aus mehreren kleineren Screenshots zusammen. Dadurch können wesentlich größere Screenshots aufgenommen werden als normal möglich. Allerdings funktionieren dann manche Shader nicht mehr richtig.
 
 mineshot.config.preloadChunks=Chunk-Preloading
 mineshot.config.preloadChunks.tooltip=Alle sichtbaren Chunks werden vollständig geladen bevor der Screenshot erstellt wird.
