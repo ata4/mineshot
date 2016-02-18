@@ -35,6 +35,9 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     private final int widthTiled;
     private final int heightTiled;
     
+    private final ToggleableClippingHelper clippingHelper = ToggleableClippingHelper.getInstance();
+    private boolean clippingEnabled;
+    
     public FramebufferTiledWriter(File file, FramebufferCapturer fbc, int width, int height) throws FileNotFoundException, IOException {
         super(file, fbc);
         
@@ -43,11 +46,12 @@ public class FramebufferTiledWriter extends FramebufferWriter {
     }
 
     private void modifySettings() {
-        ToggleableClippingHelper.getInstance().setEnabled(false);
+        clippingEnabled = clippingHelper.isEnabled();
+        clippingHelper.setEnabled(false);
     }
 
     private void restoreSettings() {
-        ToggleableClippingHelper.getInstance().setEnabled(true);
+        clippingHelper.setEnabled(clippingEnabled);
     }
     
     @Override

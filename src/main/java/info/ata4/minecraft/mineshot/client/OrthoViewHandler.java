@@ -54,6 +54,9 @@ public class OrthoViewHandler {
     private final KeyBinding keyRotateS = new KeyBinding("key.mineshot.ortho.rotate_s", Keyboard.KEY_NUMPAD3, KEY_CATEGORY);
     private final KeyBinding keyClip = new KeyBinding("key.mineshot.ortho.clip", Keyboard.KEY_MULTIPLY, KEY_CATEGORY);
     
+    private final ToggleableClippingHelper clippingHelper = ToggleableClippingHelper.getInstance();
+    private boolean clippingEnabled;
+    
     private boolean enabled;
     private boolean freeCam;
     private boolean clip;
@@ -108,7 +111,8 @@ public class OrthoViewHandler {
         }
         
         if (!enabled) {
-            ToggleableClippingHelper.getInstance().setEnabled(false);
+            clippingEnabled = clippingHelper.isEnabled();
+            clippingHelper.setEnabled(false);
             reset();
         }
         
@@ -117,7 +121,7 @@ public class OrthoViewHandler {
     
     public void disable() {
         if (enabled) {
-            ToggleableClippingHelper.getInstance().setEnabled(true);
+            clippingHelper.setEnabled(clippingEnabled);
         }
         
         enabled = false;
