@@ -100,13 +100,13 @@ public class ScreenshotHandler {
             throw new UncheckedIOException(ex);
         }
         
-        Path file;
-        String fileName = "huge_" + DATE_FORMAT.format(new Date());
-        String fileExt = "tga";
-        
         // loop though suffixes while the file exists
-        for (int i = 1; Files.exists(file = dir.resolve(fileName + (i != 1 ? "_" + i : "") + "." + fileExt)); i++) {
-        }
+        int i = 0;
+        Path file;
+        do {
+            file = dir.resolve(String.format("huge_%s_%04d.tga",
+                    DATE_FORMAT.format(new Date()), i++));
+        } while (Files.exists(file));
         
         return file;
     }
