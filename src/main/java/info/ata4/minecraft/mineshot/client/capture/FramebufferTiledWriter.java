@@ -11,7 +11,7 @@ package info.ata4.minecraft.mineshot.client.capture;
 
 import info.ata4.minecraft.mineshot.client.wrapper.Projection;
 import info.ata4.minecraft.mineshot.client.wrapper.ToggleableClippingHelper;
-import info.ata4.minecraft.mineshot.util.reflection.MinecraftAccessor;
+import info.ata4.minecraft.mineshot.util.reflection.PrivateAccessor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import org.lwjgl.util.Dimension;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class FramebufferTiledWriter extends FramebufferWriter {
+public class FramebufferTiledWriter extends FramebufferWriter implements PrivateAccessor {
     
     private static final Minecraft MC = Minecraft.getMinecraft();
 
@@ -70,7 +70,7 @@ public class FramebufferTiledWriter extends FramebufferWriter {
         Projection.zoom = tilesX <= tilesY ? tilesY : tilesX;
         
         EntityRenderer entityRenderer = MC.entityRenderer;
-        Timer timer = MinecraftAccessor.getTimer(MC);
+        Timer timer = getTimer(MC);
         
         fbc.setFlipColors(true);
         fbc.setFlipLines(false);
