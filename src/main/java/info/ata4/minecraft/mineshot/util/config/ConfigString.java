@@ -22,19 +22,18 @@ public class ConfigString extends ConfigValue<String> {
     }
 
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.STRING;
     }
 
     @Override
-    public void importProp(Property prop) {
-        set(prop.getString());
+    public String get() {
+        return getProp().getString();
     }
 
     @Override
-    public void exportProp(Property prop) {
-        prop.set(get());
-        prop.setDefaultValue(getDefault());
+    public void set(String value) {
+        getProp().set(value);
     }
-    
+
 }

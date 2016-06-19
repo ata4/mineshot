@@ -10,11 +10,9 @@
 package info.ata4.minecraft.mineshot.util.config;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import net.minecraftforge.common.config.Property;
 import org.apache.commons.lang3.Validate;
-import scala.actors.threadpool.Arrays;
 
 /**
  *
@@ -24,46 +22,40 @@ public class ConfigStringEnum extends ConfigString {
 
     private final Set<String> choices;
     private final String[] validValues;
-    
+
     public ConfigStringEnum(String value, Set<String> choices) {
         super(value);
-        
+
         Validate.notEmpty(choices);
-        
+
         if (!choices.contains(value)) {
             throw new IllegalArgumentException();
         }
-        
+
         this.choices = Collections.unmodifiableSet(choices);
-        
+
         validValues = choices.toArray(new String[]{});
     }
-    
-    public ConfigStringEnum(String value, String... choices) {
-        this(value, new HashSet<String>(Arrays.asList(choices)));
-    }
-    
-    public Set<String> getChoices() {
-        return choices;
-    }
-    
+
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.STRING;
     }
     
     @Override
+    protected Property getProp() {
+        Property prop = super.getProp();
+        prop.setValidValues(validValues);
+        return prop;
+    }
+
+    @Override
     public void set(String value) {
-        if (!choices.contains(value)) {
-            super.set(getDefault());
-        } else {
+        if (choices.contains(value)) {
             super.set(value);
+        } else {
+            super.set(getDefault());
         }
     }
     
-    @Override
-    public void exportProp(Property prop) {
-        super.exportProp(prop);
-        prop.setValidValues(validValues);
-    }
 }

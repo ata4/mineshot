@@ -12,16 +12,15 @@ package info.ata4.minecraft.mineshot;
 import info.ata4.minecraft.mineshot.client.OrthoViewHandler;
 import info.ata4.minecraft.mineshot.client.ScreenshotHandler;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
+import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Mineshot mod container class.
@@ -45,8 +44,13 @@ public class Mineshot {
     public static Mineshot instance;
     
     private ModMetadata metadata;
+    private Configuration configForge;
     private MineshotConfig config;
     
+    public Configuration getConfigForge() {
+        return configForge;
+    }
+
     public MineshotConfig getConfig() {
         return config;
     }
@@ -54,17 +58,12 @@ public class Mineshot {
     public ModMetadata getMetadata() {
         return metadata;
     }
-    
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if (eventArgs.modID.equals(ID)) {
-            config.update(false);
-        }
-    }
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent evt) {
-        config = new MineshotConfig(new Configuration(evt.getSuggestedConfigurationFile()));
+        File file = evt.getSuggestedConfigurationFile();
+        configForge = new Configuration(file);
+        config = new MineshotConfig(configForge);
         metadata = evt.getModMetadata();
     }
     

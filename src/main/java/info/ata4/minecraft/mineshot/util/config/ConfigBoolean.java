@@ -22,19 +22,18 @@ public class ConfigBoolean extends ConfigValue<Boolean> {
     }
 
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.BOOLEAN;
     }
 
     @Override
-    public void importProp(Property prop) {
-        set(prop.getBoolean());
+    public Boolean get() {
+        return getProp().getBoolean();
     }
 
     @Override
-    public void exportProp(Property prop) {
-        prop.set(get());
-        prop.setDefaultValue(getDefault());
+    public void set(Boolean value) {
+        getProp().set(value);
     }
-    
+
 }

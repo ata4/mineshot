@@ -21,11 +21,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 public class MineshotConfigGuiFactory implements IModGuiFactory {
 
     @Override
-    public void initialize(Minecraft minecraftInstance) {
-        // What is the point of this method? I can't imagine any possible scenario
-        // where minecraftInstance != Minecraft.getMinecraft(). Why not let me
-        // call the constructor myself with the GuiScreen object instead?
-        // Ugh! Just... ugh!
+    public void initialize(Minecraft mc) {
     }
 
     @Override

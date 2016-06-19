@@ -16,49 +16,59 @@ import net.minecraftforge.common.config.Property;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class ConfigEnum<T extends Enum> extends ConfigValue<T> {
-    
+
     private final Class<T> type;
     private final String[] validValues;
 
     public ConfigEnum(T value) {
         super(value);
-        
-        this.type = (Class<T>) value.getClass();
-        
+
+        type = (Class<T>) value.getClass();
+
         T[] values = type.getEnumConstants();
         validValues = new String[values.length];
         for (int i = 0; i < values.length; i++) {
             validValues[i] = enumToString(values[i]);
         }
     }
-    
+
     private String enumToString(T e) {
         return e.name().toLowerCase();
     }
-    
+
     private T stringToEnum(String name) {
-        return (T) T.valueOf(type, name.toUpperCase());
+        return (T) Enum.valueOf(type, name.toUpperCase());
     }
     
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.STRING;
     }
-
+    
     @Override
-    public void importProp(Property prop) {
+    protected Property getProp() {
+        Property prop = super.getProp();
+        prop.setValidValues(validValues);
+        return prop;
+    }
+    
+    @Override
+    protected String getPropDefault() {
+        return enumToString(getDefault());
+    }
+   
+    @Override
+    public T get() {
         try {
-            set(stringToEnum(prop.getString()));
+            return stringToEnum(getProp().getString());
         } catch (IllegalArgumentException ex) {
-            set(getDefault());
+            reset();
+            return stringToEnum(getProp().getString());
         }
     }
 
     @Override
-    public void exportProp(Property prop) {
-        prop.set(enumToString(get()));
-        prop.setDefaultValue(enumToString(getDefault()));
-        prop.setValidValues(validValues);
+    public void set(T value) {
+        getProp().set(enumToString(get()));
     }
-
 }
