@@ -13,6 +13,7 @@ import info.ata4.minecraft.mineshot.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.mineshot.client.capture.FramebufferWriter;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
 import java.io.File;
+import java.nio.file.Path;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
@@ -25,13 +26,13 @@ public class CaptureTask implements RenderTickTask {
     private static final Minecraft MC = Minecraft.getMinecraft();
     
     private final MineshotConfig config;
-    private final File file;
+    private final Path file;
     
     private int frame;
     private int displayWidth;
     private int displayHeight;
     
-    public CaptureTask(MineshotConfig config, File file) {
+    public CaptureTask(MineshotConfig config, Path file) {
         this.config = config;
         this.file = file;
     }

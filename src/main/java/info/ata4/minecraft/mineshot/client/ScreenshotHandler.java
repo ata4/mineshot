@@ -14,7 +14,10 @@ import info.ata4.minecraft.mineshot.client.capture.task.CaptureTiledTask;
 import info.ata4.minecraft.mineshot.client.capture.task.RenderTickTask;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
 import info.ata4.minecraft.mineshot.client.util.ChatUtils;
-import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,7 +45,7 @@ public class ScreenshotHandler {
     private final KeyBinding keyCapture = new KeyBinding("key.mineshot.capture", Keyboard.KEY_F9, KEY_CATEGORY);
     private final MineshotConfig config;
     
-    private File taskFile;
+    private Path taskFile;
     private RenderTickTask task;
 
     public ScreenshotHandler(MineshotConfig config) {
@@ -77,7 +80,7 @@ public class ScreenshotHandler {
         try {
             if (task.onRenderTick(evt)) {
                 task = null;
-                ChatUtils.printFileLink("screenshot.success", taskFile);
+                ChatUtils.printFileLink("screenshot.success", taskFile.toFile());
             }
         } catch (Exception ex) {
             L.error("Screenshot capture failed", ex);
@@ -86,18 +89,23 @@ public class ScreenshotHandler {
         }
     }
 
-    private File getScreenshotFile() {
-        File dir = new File(MC.mcDataDir, "screenshots");
-        if (!dir.exists()) {
-            dir.mkdir();
+    private Path getScreenshotFile() {
+        Path dir = MC.mcDataDir.toPath().resolve("screenshots");
+            
+        try {
+            if (!Files.exists(dir)) {
+                Files.createDirectories(dir);
+            }
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
         }
         
-        File file;
+        Path file;
         String fileName = "huge_" + DATE_FORMAT.format(new Date());
         String fileExt = "tga";
         
         // loop though suffixes while the file exists
-        for (int i = 1; (file = new File(dir, fileName + (i != 1 ? "_" + i : "") + "." + fileExt)).exists(); i++) {
+        for (int i = 1; Files.exists(file = dir.resolve(fileName + (i != 1 ? "_" + i : "") + "." + fileExt)); i++) {
         }
         
         return file;

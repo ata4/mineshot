@@ -12,9 +12,9 @@ package info.ata4.minecraft.mineshot.client.capture.task;
 import info.ata4.minecraft.mineshot.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.mineshot.client.capture.FramebufferTiledWriter;
 import info.ata4.minecraft.mineshot.client.config.MineshotConfig;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 /**
@@ -24,9 +24,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 public class CaptureTiledTask implements RenderTickTask {
     
     private final MineshotConfig config;
-    private final File file;
+    private final Path file;
     
-    public CaptureTiledTask(MineshotConfig config, File file) {
+    public CaptureTiledTask(MineshotConfig config, Path file) {
         this.config = config;
         this.file = file;
     }

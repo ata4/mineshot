@@ -9,14 +9,13 @@
  */
 package info.ata4.minecraft.mineshot.client.capture;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
-import org.apache.commons.io.IOUtils;
+import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.*;
 import org.lwjgl.util.Dimension;
 
 /**
@@ -28,9 +27,9 @@ public class FramebufferWriter {
     protected static final int HEADER_SIZE = 18;
     
     protected final FramebufferCapturer fbc;
-    protected final File file;
+    protected final Path file;
 
-    public FramebufferWriter(File file, FramebufferCapturer fbc) throws FileNotFoundException, IOException {
+    public FramebufferWriter(Path file, FramebufferCapturer fbc) throws FileNotFoundException, IOException {
         this.file = file;
         this.fbc = fbc;
     }
@@ -41,18 +40,9 @@ public class FramebufferWriter {
         fbc.capture();
         
         Dimension dim = fbc.getCaptureDimension();
-        ByteBuffer bbHeader = buildTargaHeader(dim.getWidth(), dim.getHeight(),
-                fbc.getBytesPerPixel() * 8);
-        ByteBuffer bbData = fbc.getByteBuffer();
-        
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            FileChannel fc = fos.getChannel();
-            fc.write(bbHeader);
-            fc.write(bbData);
-        } finally {
-            IOUtils.closeQuietly(fos);
+        try (FileChannel fc = FileChannel.open(file, CREATE, WRITE)) {
+            fc.write(buildTargaHeader(dim.getWidth(), dim.getHeight(), fbc.getBytesPerPixel() * 8));
+            fc.write(fbc.getByteBuffer());
         }
     }
     
