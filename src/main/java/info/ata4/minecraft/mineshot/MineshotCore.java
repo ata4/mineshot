@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
  * 
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-@MCVersion(value = "1.8.9")
+@MCVersion(value = "1.9")
 public class MineshotCore implements IFMLLoadingPlugin {
 
     @Override
