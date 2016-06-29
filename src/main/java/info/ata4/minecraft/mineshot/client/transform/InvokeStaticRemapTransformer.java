@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.launchwrapper.IClassTransformer;
-import org.apache.commons.lang3.tuple.Pair;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -28,9 +27,9 @@ import org.objectweb.asm.commons.InstructionAdapter;
  */
 public class InvokeStaticRemapTransformer implements IClassTransformer  {
     
-    private final Set<String> remapClasses = new HashSet<String>();
-    private final Set<String> remapLocations = new HashSet<String>();
-    private final List<InvokeStaticRemap> remaps = new ArrayList<InvokeStaticRemap>();
+    private final Set<String> remapClasses = new HashSet<>();
+    private final Set<String> remapLocations = new HashSet<>();
+    private final List<InvokeStaticRemap> remaps = new ArrayList<>();
     
     private class InvokeStaticRemap {
         String className;
