@@ -49,6 +49,11 @@ public abstract class ConfigValue<T> {
         // set property language key and description
         String propLangKey = langKeyPrefix + "." + propName;
         String propDesc = WordUtils.wrap(I18n.format(propLangKey + ".tooltip"), 128);
+        
+        // make sure the properties have insertion order instead of being
+        // randomly ordered
+        List<String> order = new ArrayList<>(cat.getPropertyOrder());
+        order.add(propName);
 
         // create supplier so that later calls don't need all the variables above
         propSupplier = () -> {
@@ -61,9 +66,7 @@ public abstract class ConfigValue<T> {
         // initialize prop
         getProp();
         
-        // make sure the properties have an insertion order
-        List<String> order = new ArrayList<>(cat.getPropertyOrder());
-        order.add(name);
+        // update prop order
         cat.setPropertyOrder(order);
     }
     
