@@ -47,7 +47,7 @@ minecraft {
     mappings = "stable_20"
 }
 
-version =  "${getGitTag()}-${minecraft.version}"
+version = getGitTag()
 group = "info.ata4.minecraft.mineshot" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Mineshot"
 
