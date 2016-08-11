@@ -33,7 +33,7 @@ public class ChatUtils {
 
         GuiNewChat chat = MC.ingameGUI.getChatGUI();
         TextComponentTranslation ret = new TextComponentTranslation(msg, args);
-        ret.getChatStyle().setColor(format);
+        ret.getStyle().setColor(format);
 
         chat.printChatMessage(ret);
     }
@@ -52,8 +52,8 @@ public class ChatUtils {
             path = file.getAbsolutePath();
         }
         
-        text.getChatStyle().setChatClickEvent(new ClickEvent(OPEN_FILE, path));
-        text.getChatStyle().setUnderlined(true);
+        text.getStyle().setClickEvent(new ClickEvent(OPEN_FILE, path));
+        text.getStyle().setUnderlined(true);
         
         print(msg, text);
     }
