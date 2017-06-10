@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 )
 public class Mineshot {
     
-    public static final String NAME = "Mineshot";
+    public static final String NAME = "mineshot";
     public static final String ID = NAME;
     public static final String VERSION = "@VERSION@";
     
