@@ -16,6 +16,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -31,7 +33,8 @@ public abstract class ConfigValue<T> {
     public ConfigValue(T value) {
         this.valueDefault = value;
     }
-    
+
+    @SideOnly(Side.CLIENT)
     public void link(Configuration config, String name, String langKeyPrefix) {
         String[] parts = StringUtils.split(name, '.');
         String catName = parts[0];

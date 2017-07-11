@@ -18,7 +18,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class MineshotConfigGuiFactory implements IModGuiFactory {
+public abstract class MineshotConfigGuiFactory implements IModGuiFactory {
 
     @Override
     public void initialize(Minecraft mc) {

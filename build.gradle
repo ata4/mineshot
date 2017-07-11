@@ -35,7 +35,7 @@ def getGitTag = { ->
 }
 
 minecraft {
-    version = "1.10.2-12.18.1.2012"
+    version = "13.20.0.2282"
     runDir = "minecraft"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -43,12 +43,12 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160710"
+    mappings = "snapshot_20170323"
 }
 
 version = getGitTag()
 group = "info.ata4.minecraft.mineshot" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Mineshot"
+archivesBaseName = "mineshot"
 
 // replace version placeholder in the main mod class
 minecraft {
