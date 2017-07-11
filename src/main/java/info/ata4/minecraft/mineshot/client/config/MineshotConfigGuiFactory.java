@@ -18,27 +18,13 @@ import net.minecraftforge.fml.client.IModGuiFactory;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class MineshotConfigGuiFactory implements IModGuiFactory {
+public abstract class MineshotConfigGuiFactory implements IModGuiFactory {
 
     @Override
     public void initialize(Minecraft mc) {
     }
 
-    @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() {
         return MineshotConfigGui.class;
     }
-
-    @Override
-    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-        // unused/unimplemented by Forge at time this was written
-        return null;
-    }
-
-    @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
-        // unused/unimplemented by Forge at time this was written
-        return null;
-    }
-    
 }
