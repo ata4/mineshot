@@ -31,15 +31,15 @@ public class EntityRendererTransformer extends InvokeStaticRemapTransformer {
         );
         
         remap(
-            "bqe/*",
+            "buo/*",
             "org/lwjgl/util/glu/Project/gluPerspective",
             "info/ata4/minecraft/mineshot/client/wrapper/Projection/perspective",
             "(FFFF)V"
         );
         
         remap(
-            "bqe/*",
-            "bqg/a",
+            "buo/*",
+            "buq/a",
             "info/ata4/minecraft/mineshot/client/wrapper/Projection/ortho",
             "(DDDDDD)V"
         );

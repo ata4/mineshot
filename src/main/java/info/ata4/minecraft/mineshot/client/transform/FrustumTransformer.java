@@ -25,9 +25,9 @@ public class FrustumTransformer extends InvokeStaticRemapTransformer {
         
         remap(
             "btn/<init>",
-            "btm/a",
+            "bxx/a",
             "info/ata4/minecraft/mineshot/client/wrapper/ToggleableClippingHelper/getInstanceWrapper",
-            "()Lbto;"
+            "()Lbxz;"
         );
     }
 }
