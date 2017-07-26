@@ -1,6 +1,6 @@
 [
 {
-  "modid": "Mineshot",
+  "modid": "mineshot",
   "name": "Mineshot",
   "description": "A revamped version of Notch's huge screenshot function.",
   "version": "${version}",
