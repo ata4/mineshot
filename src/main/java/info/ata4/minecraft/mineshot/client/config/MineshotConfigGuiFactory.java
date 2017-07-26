@@ -40,5 +40,15 @@ public class MineshotConfigGuiFactory implements IModGuiFactory {
         // unused/unimplemented by Forge at time this was written
         return null;
     }
+
+    @Override
+    public boolean hasConfigGui() {
+        return true;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen gs) {
+        return new MineshotConfigGui(gs);
+    }
     
 }
