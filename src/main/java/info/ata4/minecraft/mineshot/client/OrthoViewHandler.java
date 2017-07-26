@@ -237,8 +237,8 @@ public class OrthoViewHandler implements PrivateAccessor {
 
         // rotate the orthographic camera with the player view
         if (freeCam) {
-            xRot = MC.thePlayer.rotationPitch;
-            yRot = MC.thePlayer.rotationYaw - 180;
+            xRot = MC.player.rotationPitch;
+            yRot = MC.player.rotationYaw - 180;
         }
         
         // override camera view matrix
