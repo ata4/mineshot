@@ -41,3 +41,7 @@ To enable or disable the orthographic camera introduced in 1.4, just press numpa
  - Shift + Numpad 5: Switch between fixed and free camera.
  - Plus: Zoom in
  - Minus: Zoom out
+
+## Download
+
+Compiled Jars can be found on the [releases page](https://github.com/ata4/mineshot/releases).
