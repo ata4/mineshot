@@ -66,7 +66,13 @@ public class MineshotConfigGuiFactory implements IModGuiFactory {
         
         String title = GuiConfig.getAbridgedConfigPath(Mineshot.instance.getConfigForge().toString());
         
-        return new GuiConfig(gs, configElems, Mineshot.ID, false, false, title);
+        return new GuiConfig(gs, configElems, Mineshot.ID, false, false, title) {
+            @Override
+            public void onGuiClosed() {
+                super.onGuiClosed();
+                config.save();
+            }
+        };
     }
     
 }
