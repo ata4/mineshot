@@ -25,7 +25,6 @@ public interface PrivateAccessor {
     static final Logger L = LogManager.getLogger();
     
     static final String[] MINECRAFT_TIMER = new String[] {"timer", "field_71428_T"};
-    static final String[] CLIPPINGHELPERIMPL_INSTANCE = new String[] {"instance", "field_78563_e"};
     static final String[] ACTIVERENDERINFO_ROTATIONX = new String[]{"rotationX", "field_74588_d"};
     static final String[] ACTIVERENDERINFO_ROTATIONZ = new String[]{"rotationZ", "field_74586_f"};
     static final String[] ACTIVERENDERINFO_ROTATIONYZ = new String[]{"rotationYZ", "field_74587_g"};

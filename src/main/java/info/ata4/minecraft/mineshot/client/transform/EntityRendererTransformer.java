@@ -9,8 +9,6 @@
  */
 package info.ata4.minecraft.mineshot.client.transform;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
@@ -33,15 +31,15 @@ public class EntityRendererTransformer extends InvokeStaticRemapTransformer {
         );
         
         remap(
-            "bfk/*",
+            "buo/*",
             "org/lwjgl/util/glu/Project/gluPerspective",
             "info/ata4/minecraft/mineshot/client/wrapper/Projection/perspective",
             "(FFFF)V"
         );
         
         remap(
-            "bfk/*",
-            "bfl/a",
+            "buo/*",
+            "buq/a",
             "info/ata4/minecraft/mineshot/client/wrapper/Projection/ortho",
             "(DDDDDD)V"
         );

@@ -9,8 +9,6 @@
  */
 package info.ata4.minecraft.mineshot.client.transform;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
@@ -26,10 +24,10 @@ public class FrustumTransformer extends InvokeStaticRemapTransformer {
         );
         
         remap(
-            "bic/<init>",
-            "bib/a",
+            "btn/<init>",
+            "bxx/a",
             "info/ata4/minecraft/mineshot/client/wrapper/ToggleableClippingHelper/getInstanceWrapper",
-            "()Lbid;"
+            "()Lbxz;"
         );
     }
 }
