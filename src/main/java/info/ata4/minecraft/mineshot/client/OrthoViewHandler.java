@@ -258,4 +258,19 @@ public class OrthoViewHandler implements PrivateAccessor {
             setRotationXZ(MathHelper.cos(pitch * (float) Math.PI / 180f));
         }
     }
+
+    @SubscribeEvent
+    public void onTextRender(RenderGameOverlayEvent.Text textEvent)
+    {
+        if (textEvent.getType() != RenderGameOverlayEvent.ElementType.TEXT)
+            return;
+
+        // display zoom level in debug menu
+        Minecraft minecraft = Minecraft.getMinecraft();
+        if (minecraft.gameSettings.showDebugInfo && isEnabled())
+        {
+            textEvent.getLeft().add("");
+            textEvent.getLeft().add("Zoom: " + zoom);
+        }
+    }
 }
