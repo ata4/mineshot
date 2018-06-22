@@ -3,7 +3,7 @@
   "modid": "mineshot",
   "name": "Mineshot",
   "description": "A revamped version of Notch's huge screenshot function.",
-  "version": "${version}",
+  "version": "1.72",
   "url": "http://www.minecraftforum.net/forums/thread/1282034",
   "authorList": [ "Barracuda" ]
 }
