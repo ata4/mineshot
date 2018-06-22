@@ -30,17 +30,23 @@ If you use lots of shaders, it's not recommended to enable tiled rendering, sinc
 
 To enable or disable the orthographic camera introduced in 1.4, just press numpad 5. If you have used Blender before, the keys are exactly the same:
 
+ - Numpad 5: Switch between perspective and orthograpic projection
+ - Control + Numpad 5: Switch between fixed and free camera
+ - Numpad 7: Top view
+ - Control + Numpad 7: Bottom view
+ - Numpad 1: Front view
+ - Control + Numpad 1: Back view
+ - Numpad 3: Right side view
+ - Control + Numpad 3: Left side view
+ 
+The camera view can be further configured using these keys. They can be switched to work in steps by holding control at the same time:
+
+ - Plus: Zoom in
+ - Minus: Zoom out
  - Numpad 4: Rotate left
  - Numpad 6: Rotate right
  - Numpad 8: Rotate up
  - Numpad 2: Rotate down
- - Numpad 7: Top view
- - Numpad 1: Front view
- - Numpad 3: Side view
- - Numpad 5: Switch between perspective and orthograpic projection
- - Shift + Numpad 5: Switch between fixed and free camera.
- - Plus: Zoom in
- - Minus: Zoom out
 
 ## Download
 
