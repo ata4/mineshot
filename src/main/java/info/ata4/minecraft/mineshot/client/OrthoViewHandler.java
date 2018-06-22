@@ -265,6 +265,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         if (textEvent.getType() != RenderGameOverlayEvent.ElementType.TEXT)
             return;
 
+        // display zoom level in debug menu
         Minecraft minecraft = Minecraft.getMinecraft();
         if (minecraft.gameSettings.showDebugInfo && isEnabled())
         {
