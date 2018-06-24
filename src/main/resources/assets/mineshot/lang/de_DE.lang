@@ -1,18 +1,17 @@
 # keys
 key.categories.mineshot=Mineshot
 
-key.mineshot.capture=Riesiger Screenshot
-key.mineshot.ortho.toggle=Kameramodus wechseln
-key.mineshot.ortho.zoom_in=Kamera reinzoomen
-key.mineshot.ortho.zoom_out=Kamera rauszoomen
-key.mineshot.ortho.rotate_l=Kamera nach links
-key.mineshot.ortho.rotate_r=Kamera nach rechts
-key.mineshot.ortho.rotate_u=Kamera nach oben
-key.mineshot.ortho.rotate_d=Kamera nach unten
-key.mineshot.ortho.rotate_t=Kamera Draufsicht
-key.mineshot.ortho.rotate_f=Kamera Vorderansicht
-key.mineshot.ortho.rotate_s=Kamera Seitenansicht
-key.mineshot.ortho.clip=Kamera Clippingdistanz ändern
+key.mineshot.capture=Riesigen Screenshot aufnehmen
+key.mineshot.ortho.toggle=Kameramodus
+key.mineshot.ortho.zoom_in=Kamera hineinzoomen
+key.mineshot.ortho.zoom_out=Kamera herauszoomen
+key.mineshot.ortho.rotate_left=Kamera nach links
+key.mineshot.ortho.rotate_right=Kamera nach rechts
+key.mineshot.ortho.rotate_up=Kamera nach oben
+key.mineshot.ortho.rotate_down=Kamera nach unten
+key.mineshot.ortho.preset=Kameraeinstellung wechseln
+key.mineshot.ortho.clip=Kameraclipping ändern
+key.mineshot.ortho.free=Kamerabewegung nach Spieler
 
 mineshot.orthomp=Orthographische Perspektive im Mehrspieler-Modus nicht verfügbar
 
