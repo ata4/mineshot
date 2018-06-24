@@ -176,6 +176,9 @@ public class OrthoViewHandler implements PrivateAccessor {
             xRot = Math.round(xRot / ROTATE_STEP) * ROTATE_STEP;
             yRot = Math.round(yRot / ROTATE_STEP) * ROTATE_STEP;
             zoom = Math.round(zoom / ZOOM_STEP) * ZOOM_STEP;
+
+            // fixes a bug where zoom could reach 0 due to pressing the modifier key when zoom is already below 0.25
+            zoom += 0.5f * (float) Math.floor(1 / (1f + zoom));
         }
     }
     
