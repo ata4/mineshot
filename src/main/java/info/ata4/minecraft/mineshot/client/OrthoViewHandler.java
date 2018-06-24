@@ -43,17 +43,16 @@ public class OrthoViewHandler implements PrivateAccessor {
     private static final float ROTATE_SPEED = 4;
     private static final float SECONDS_PER_TICK = 1f/20f;
     
-    private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_NUMPAD5, KEY_CATEGORY);
-    private final KeyBinding keyZoomIn = new KeyBinding("key.mineshot.ortho.zoom_in", Keyboard.KEY_ADD, KEY_CATEGORY);
-    private final KeyBinding keyZoomOut = new KeyBinding("key.mineshot.ortho.zoom_out", Keyboard.KEY_SUBTRACT, KEY_CATEGORY);
-    private final KeyBinding keyRotateL = new KeyBinding("key.mineshot.ortho.rotate_l", Keyboard.KEY_NUMPAD4, KEY_CATEGORY);
-    private final KeyBinding keyRotateR = new KeyBinding("key.mineshot.ortho.rotate_r", Keyboard.KEY_NUMPAD6, KEY_CATEGORY);
-    private final KeyBinding keyRotateU = new KeyBinding("key.mineshot.ortho.rotate_u", Keyboard.KEY_NUMPAD8, KEY_CATEGORY);
-    private final KeyBinding keyRotateD = new KeyBinding("key.mineshot.ortho.rotate_d", Keyboard.KEY_NUMPAD2, KEY_CATEGORY);
-    private final KeyBinding keyRotateT = new KeyBinding("key.mineshot.ortho.rotate_t", Keyboard.KEY_NUMPAD7, KEY_CATEGORY);
-    private final KeyBinding keyRotateF = new KeyBinding("key.mineshot.ortho.rotate_f", Keyboard.KEY_NUMPAD1, KEY_CATEGORY);
-    private final KeyBinding keyRotateS = new KeyBinding("key.mineshot.ortho.rotate_s", Keyboard.KEY_NUMPAD3, KEY_CATEGORY);
-    private final KeyBinding keyClip = new KeyBinding("key.mineshot.ortho.clip", Keyboard.KEY_MULTIPLY, KEY_CATEGORY);
+    private final KeyBinding keyToggle = new KeyBinding("key.mineshot.ortho.toggle", Keyboard.KEY_F7, KEY_CATEGORY);
+    private final KeyBinding keyFree = new KeyBinding("key.mineshot.ortho.free", Keyboard.KEY_SEMICOLON, KEY_CATEGORY);
+    private final KeyBinding keyClip = new KeyBinding("key.mineshot.ortho.clip", Keyboard.KEY_APOSTROPHE, KEY_CATEGORY);
+    private final KeyBinding keyPreset = new KeyBinding("key.mineshot.ortho.preset", Keyboard.KEY_LBRACKET, KEY_CATEGORY);
+    private final KeyBinding keyZoomIn = new KeyBinding("key.mineshot.ortho.zoom_in", Keyboard.KEY_RBRACKET, KEY_CATEGORY);
+    private final KeyBinding keyZoomOut = new KeyBinding("key.mineshot.ortho.zoom_out", Keyboard.KEY_BACKSLASH, KEY_CATEGORY);
+    private final KeyBinding keyRotateLeft = new KeyBinding("key.mineshot.ortho.rotate_left", Keyboard.KEY_LEFT, KEY_CATEGORY);
+    private final KeyBinding keyRotateRight = new KeyBinding("key.mineshot.ortho.rotate_right", Keyboard.KEY_RIGHT, KEY_CATEGORY);
+    private final KeyBinding keyRotateUp = new KeyBinding("key.mineshot.ortho.rotate_up", Keyboard.KEY_UP, KEY_CATEGORY);
+    private final KeyBinding keyRotateDown = new KeyBinding("key.mineshot.ortho.rotate_down", Keyboard.KEY_DOWN, KEY_CATEGORY);
     
     private final ToggleableClippingHelper clippingHelper = ToggleableClippingHelper.getInstance();
     private boolean clippingEnabled;
@@ -68,20 +67,22 @@ public class OrthoViewHandler implements PrivateAccessor {
     
     private int tick;
     private int tickPrevious;
+    private int counter;
     private double partialPrevious;
+
+    int[][] angles = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {3, 0}};
     
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
         ClientRegistry.registerKeyBinding(keyZoomIn);
         ClientRegistry.registerKeyBinding(keyZoomOut);
-        ClientRegistry.registerKeyBinding(keyRotateL);
-        ClientRegistry.registerKeyBinding(keyRotateR);
-        ClientRegistry.registerKeyBinding(keyRotateU);
-        ClientRegistry.registerKeyBinding(keyRotateD);
-        ClientRegistry.registerKeyBinding(keyRotateT);
-        ClientRegistry.registerKeyBinding(keyRotateF);
-        ClientRegistry.registerKeyBinding(keyRotateS);
+        ClientRegistry.registerKeyBinding(keyRotateLeft);
+        ClientRegistry.registerKeyBinding(keyRotateRight);
+        ClientRegistry.registerKeyBinding(keyRotateUp);
+        ClientRegistry.registerKeyBinding(keyRotateDown);
+        ClientRegistry.registerKeyBinding(keyPreset);
         ClientRegistry.registerKeyBinding(keyClip);
+        ClientRegistry.registerKeyBinding(keyFree);
         
         reset();
     }
@@ -92,9 +93,10 @@ public class OrthoViewHandler implements PrivateAccessor {
         
         zoom = 8;
         xRot = 30;
-        yRot = -45;
+        yRot = 315;
         tick = 0;
         tickPrevious = 0;
+        counter = 0;
         partialPrevious = 0;
     }
 
@@ -145,23 +147,23 @@ public class OrthoViewHandler implements PrivateAccessor {
         boolean mod = modifierKeyPressed();
         
         // change perspecives, using modifier key for opposite sides
-        if (keyToggle.isKeyDown()) {
-            if (mod) {
-                freeCam = !freeCam;
-            } else {
-                toggle();
-            } 
-        } else if (keyClip.isKeyDown()) {
+        if (keyToggle.isPressed()) {
+            toggle();
+        } else if (keyFree.isPressed()) {
+            freeCam = !freeCam;
+        } else if (keyClip.isPressed()) {
             clip = !clip;
-        } else if (keyRotateT.isKeyDown()) {
-            xRot = mod ? -90 : 90;
-            yRot = 0;
-        } else if (keyRotateF.isKeyDown()) {
-            xRot = 0;
-            yRot = mod ? -90 : 90;
-        } else if (keyRotateS.isKeyDown()) {
-            xRot = 0;
-            yRot = mod ? 180 : 0;
+        } else if (keyPreset.isPressed()) {
+
+            // snap to preset depending on current values, doesn't trigger if a preset is already set
+            if (yRot / 90f - Math.floor(yRot / 90f) > 0 || xRot / 90f - Math.floor(xRot / 90f) > 0) {
+                counter = Math.round(yRot / 90f) - 1 - 4 * (int) (Math.round(yRot / 90f) / 4f);
+            }
+
+            // change counter, direction depends on modifier key, includes checks to ensure array angles doesn't run out of bounds
+            counter = mod ? counter - 1 + 6 * (int) (1 - counter / 6f) : counter + 1 - 6 * (int) (counter / 5f);
+            xRot = angles[counter][0] * 90f;
+            yRot = angles[counter][1] * 90f;
         }
 
         // update stepped rotation/zoom controls
@@ -185,19 +187,23 @@ public class OrthoViewHandler implements PrivateAccessor {
             zoom *= 1 + ZOOM_STEP * multi;
         }
         
-        if (keyRotateL.isKeyDown()) {
+        if (keyRotateLeft.isKeyDown()) {
             yRot += ROTATE_STEP * multi;
         }
-        if (keyRotateR.isKeyDown()) {
+        if (keyRotateRight.isKeyDown()) {
             yRot -= ROTATE_STEP * multi;
         }
 
-        if (keyRotateU.isKeyDown()) {
+        if (keyRotateUp.isKeyDown()) {
             xRot += ROTATE_STEP * multi;
         }
-        if (keyRotateD.isKeyDown()) {
+        if (keyRotateDown.isKeyDown()) {
             xRot -= ROTATE_STEP * multi;
         }
+
+        // don't let rotation exceed 360 degress or take negative values
+        yRot -= 360f * (int) Math.floor(yRot / 360f);
+        xRot -= 360f * (int) Math.floor(xRot / 360f);
     }
     
     @SubscribeEvent
@@ -266,12 +272,15 @@ public class OrthoViewHandler implements PrivateAccessor {
         if (textEvent.getType() != RenderGameOverlayEvent.ElementType.TEXT)
             return;
 
-        // display zoom level in debug menu
+        // display various stats in debug menu, only active when the ortographic camera is
         Minecraft minecraft = Minecraft.getMinecraft();
         if (minecraft.gameSettings.showDebugInfo && isEnabled())
         {
-            textEvent.getLeft().add("");
-            textEvent.getLeft().add("Zoom: " + zoom);
+            textEvent.getRight().add("");
+            textEvent.getRight().add("\u00A7nMineshot\u00A7r");
+            textEvent.getRight().add("Zoom: " + String.format("%.3f", zoom));
+            textEvent.getRight().add("Y-Rotation: " + String.format("%.3f", yRot));
+            textEvent.getRight().add("X-Rotation: " + String.format("%.3f", xRot));
         }
     }
 }
