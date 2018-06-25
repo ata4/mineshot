@@ -14,6 +14,7 @@ import info.ata4.minecraft.mineshot.client.wrapper.Projection;
 import info.ata4.minecraft.mineshot.client.wrapper.ToggleableClippingHelper;
 import info.ata4.minecraft.mineshot.util.reflection.PrivateAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -26,6 +27,9 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
+
+import java.text.DecimalFormat;
+
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 
@@ -47,13 +51,15 @@ public class OrthoViewHandler implements PrivateAccessor {
     private final KeyBinding keyFree = new KeyBinding("key.mineshot.ortho.free", Keyboard.KEY_SEMICOLON, KEY_CATEGORY);
     private final KeyBinding keyClip = new KeyBinding("key.mineshot.ortho.clip", Keyboard.KEY_APOSTROPHE, KEY_CATEGORY);
     private final KeyBinding keyPreset = new KeyBinding("key.mineshot.ortho.preset", Keyboard.KEY_LBRACKET, KEY_CATEGORY);
+    private final KeyBinding keyZoomGui = new KeyBinding("key.mineshot.ortho.zoom_gui", Keyboard.KEY_F8, KEY_CATEGORY);
     private final KeyBinding keyZoomIn = new KeyBinding("key.mineshot.ortho.zoom_in", Keyboard.KEY_RBRACKET, KEY_CATEGORY);
     private final KeyBinding keyZoomOut = new KeyBinding("key.mineshot.ortho.zoom_out", Keyboard.KEY_BACKSLASH, KEY_CATEGORY);
     private final KeyBinding keyRotateLeft = new KeyBinding("key.mineshot.ortho.rotate_left", Keyboard.KEY_LEFT, KEY_CATEGORY);
     private final KeyBinding keyRotateRight = new KeyBinding("key.mineshot.ortho.rotate_right", Keyboard.KEY_RIGHT, KEY_CATEGORY);
     private final KeyBinding keyRotateUp = new KeyBinding("key.mineshot.ortho.rotate_up", Keyboard.KEY_UP, KEY_CATEGORY);
     private final KeyBinding keyRotateDown = new KeyBinding("key.mineshot.ortho.rotate_down", Keyboard.KEY_DOWN, KEY_CATEGORY);
-    
+
+    Minecraft mc = Minecraft.getMinecraft();
     private final ToggleableClippingHelper clippingHelper = ToggleableClippingHelper.getInstance();
     private boolean clippingEnabled;
     
@@ -61,37 +67,38 @@ public class OrthoViewHandler implements PrivateAccessor {
     private boolean freeCam;
     private boolean clip;
     
-    private float zoom;
-    private float xRot;
-    private float yRot;
+    private static float zoom;
+    private static float xRot;
+    private static float yRot;
     
     private int tick;
     private int tickPrevious;
     private int counter;
     private double partialPrevious;
 
-    int[][] angles = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {3, 0}};
+    private final static int[][] angles = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {3, 0}};
     
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
+        ClientRegistry.registerKeyBinding(keyPreset);
+        ClientRegistry.registerKeyBinding(keyClip);
+        ClientRegistry.registerKeyBinding(keyFree);
+        ClientRegistry.registerKeyBinding(keyZoomGui);
         ClientRegistry.registerKeyBinding(keyZoomIn);
         ClientRegistry.registerKeyBinding(keyZoomOut);
         ClientRegistry.registerKeyBinding(keyRotateLeft);
         ClientRegistry.registerKeyBinding(keyRotateRight);
         ClientRegistry.registerKeyBinding(keyRotateUp);
         ClientRegistry.registerKeyBinding(keyRotateDown);
-        ClientRegistry.registerKeyBinding(keyPreset);
-        ClientRegistry.registerKeyBinding(keyClip);
-        ClientRegistry.registerKeyBinding(keyFree);
         
         reset();
     }
  
-    private void reset() {
+    public void reset() {
         freeCam = false;
         clip = false;
         
-        zoom = 8;
+        zoom = 4;
         xRot = 30;
         yRot = 315;
         tick = 0;
@@ -109,7 +116,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         // Of course, programmers could just delete this check and abuse the
         // orthographic camera, but at least the official build won't support it
         if (!MC.isSingleplayer()) {
-            ChatUtils.print("mineshot.orthomp");
+            ChatUtils.print("mineshot.ortho.mp");
             return;
         }
         
@@ -139,7 +146,7 @@ public class OrthoViewHandler implements PrivateAccessor {
     }
     
     private boolean modifierKeyPressed() {
-        return Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+        return GuiScreen.isCtrlKeyDown();
     }
     
     @SubscribeEvent
@@ -164,6 +171,9 @@ public class OrthoViewHandler implements PrivateAccessor {
             counter = mod ? counter - 1 + 6 * (int) (1 - counter / 6f) : counter + 1 - 6 * (int) (counter / 5f);
             xRot = angles[counter][0] * 90f;
             yRot = angles[counter][1] * 90f;
+        } else if (keyZoomGui.isPressed()) {
+            String modid = null;
+            mc.displayGuiScreen(new ZoomGUI(mc.currentScreen, modid));
         }
 
         // update stepped rotation/zoom controls
@@ -178,11 +188,11 @@ public class OrthoViewHandler implements PrivateAccessor {
             zoom = Math.round(zoom / ZOOM_STEP) * ZOOM_STEP;
 
             // fixes a bug where zoom could reach 0 due to pressing the modifier key when zoom is already below 0.25
-            zoom += 0.5f * (float) Math.floor(1 / (1f + zoom));
+            zoom += 0.5f * (float) Math.floor(1 / (1f + Math.abs(zoom)));
         }
     }
     
-    private void updateZoomAndRotation(double multi) {
+    public void updateZoomAndRotation(double multi) {
         if (keyZoomIn.isKeyDown()) {
             zoom *= 1 - ZOOM_STEP * multi;
         }
@@ -276,14 +286,22 @@ public class OrthoViewHandler implements PrivateAccessor {
             return;
 
         // display various stats in debug menu, only active when the ortographic camera is
-        Minecraft minecraft = Minecraft.getMinecraft();
-        if (minecraft.gameSettings.showDebugInfo && isEnabled())
+        DecimalFormat valueDisplay = new DecimalFormat("0.000");
+        if (mc.gameSettings.showDebugInfo && isEnabled())
         {
             textEvent.getRight().add("");
             textEvent.getRight().add("\u00A7nMineshot\u00A7r");
-            textEvent.getRight().add("Zoom: " + String.format("%.3f", zoom));
-            textEvent.getRight().add("Y-Rotation: " + String.format("%.3f", yRot));
-            textEvent.getRight().add("X-Rotation: " + String.format("%.3f", xRot));
+            textEvent.getRight().add("Zoom: " + valueDisplay.format(zoom));
+            textEvent.getRight().add("Y-Rotation: " + valueDisplay.format(yRot));
+            textEvent.getRight().add("X-Rotation: " + valueDisplay.format(xRot));
         }
+    }
+
+    public float getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(float z) {
+        this.zoom = z;
     }
 }
