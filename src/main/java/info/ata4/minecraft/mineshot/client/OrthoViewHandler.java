@@ -211,8 +211,8 @@ public class OrthoViewHandler implements PrivateAccessor {
         }
 
         // don't let rotation exceed 360 degress or take negative values
-        yRot = ((yRot % 360f) + 360f) % 360f;
-        xRot = ((xRot % 360f) + 360f) % 360f;
+        yRot = (yRot % 360f + 360f) % 360f;
+        xRot = (xRot % 360f + 360f) % 360f;
     }
     
     @SubscribeEvent
@@ -253,8 +253,8 @@ public class OrthoViewHandler implements PrivateAccessor {
 
         // rotate the orthographic camera with the player view
         if (freeCam) {
-            xRot = ((MC.player.rotationPitch % 360f) + 360f) % 360f;
-            yRot = (((MC.player.rotationYaw - 180f) % 360f) + 360f) % 360f;
+            xRot = (MC.player.rotationPitch % 360f + 360f) % 360f;
+            yRot = ((MC.player.rotationYaw - 180f) % 360f + 360f) % 360f;
         }
         
         // override camera view matrix
