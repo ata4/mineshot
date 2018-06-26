@@ -75,7 +75,7 @@ public class OrthoViewHandler implements PrivateAccessor {
     private int counter;
     private double partialPrevious;
 
-    private final static int[][] angles = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {3, 0}};
+    private final int[][] angles = {{0, 0}, {0, 1}, {0, 2}, {0, 3}, {1, 0}, {3, 0}};
     
     public OrthoViewHandler() {
         ClientRegistry.registerKeyBinding(keyToggle);
@@ -161,10 +161,10 @@ public class OrthoViewHandler implements PrivateAccessor {
         } else if (keyPreset.isPressed() && !freeCam) {
 
             // snap to preset depending on current values, doesn't trigger if a preset is already set, ignores presets using xRot != 0
-            if (yRot / 90f - Math.floor(yRot / 90f) != 0 || xRot / 90f - Math.floor(xRot / 90f) != 0) {
-                counter = mod ? (int) Math.floor(yRot / 90f) % 4 : (int) Math.ceil(yRot / 90f) % 4;
+            // change counter, direction depends on modifier key, includes checks to ensure array angles doesn't run out of bounds
+            if (yRot / 90f - Math.floor(yRot / 90f) > 0 || xRot / 90f - Math.floor(xRot / 90f) > 0) {
+                counter = mod ? ((int) Math.floor(yRot / 90f) % 4 + 4) % 4 : ((int) Math.ceil(yRot / 90f) % 4 + 4) % 4;
             } else {
-                // change counter, direction depends on modifier key, includes checks to ensure array angles doesn't run out of bounds
                 counter = mod ? ((counter - 1) % 6 + 6) % 6 : (counter + 1) % 6;
             }
 
