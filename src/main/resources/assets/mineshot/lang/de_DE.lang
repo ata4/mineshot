@@ -13,7 +13,8 @@ key.mineshot.ortho.preset=Kameraeinstellung wechseln
 key.mineshot.ortho.clip=Kameraclipping ändern
 key.mineshot.ortho.free=Kamerabewegung nach Spieler
 
-mineshot.orthomp=Orthographische Perspektive im Mehrspieler-Modus nicht verfügbar
+# message
+mineshot.ortho.mp=Orthographische Perspektive im Mehrspieler-Modus nicht verfügbar
 
 # config
 mineshot.config.captureWidth=Breite
