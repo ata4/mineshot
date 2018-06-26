@@ -12,16 +12,9 @@ key.mineshot.ortho.rotate_down=Camera Turn Down
 key.mineshot.ortho.preset=Camera Switch Preset
 key.mineshot.ortho.clip=Camera Change Clipping
 key.mineshot.ortho.free=Camera Follow Player
-key.mineshot.ortho.zoom_gui=Camera Set Zoom
 
 # message
 mineshot.ortho.mp=Orthographic perspective not available in multiplayer
-
-# gui
-mineshot.gui.cancel=Cancel
-mineshot.gui.done=Done
-mineshot.gui.zoomslider=Zoom
-mineshot.gui.title=Enter Zoom Level
 
 # config
 mineshot.config.captureWidth=Width
