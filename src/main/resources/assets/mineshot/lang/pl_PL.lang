@@ -5,16 +5,16 @@ key.mineshot.capture=Zrób dużego screena
 key.mineshot.ortho.toggle=Zmiana trybu kamery
 key.mineshot.ortho.zoom_in=Powiększ
 key.mineshot.ortho.zoom_out=Zmniejsz
-key.mineshot.ortho.rotate_l=Obróć w prawo
-key.mineshot.ortho.rotate_r=Obróć w lewo
-key.mineshot.ortho.rotate_u=Obróć do góry
-key.mineshot.ortho.rotate_d=Obróć w dół
-key.mineshot.ortho.rotate_t=Widok z góry
-key.mineshot.ortho.rotate_f=Widok z przodu
-key.mineshot.ortho.rotate_s=Widok z boku
+key.mineshot.ortho.rotate_left=Obróć w prawo
+key.mineshot.ortho.rotate_right=Obróć w lewo
+key.mineshot.ortho.rotate_up=Obróć do góry
+key.mineshot.ortho.rotate_down=Obróć w dół
+key.mineshot.ortho.preset=Camera Switch Preset
 key.mineshot.ortho.clip=Zmień wielkość kadru
+key.mineshot.ortho.free=Camera Follow Player
 
-mineshot.orthomp=Rzut ortograficzny nie jest dostępny w multiplayer
+# message
+mineshot.ortho.mp=Rzut ortograficzny nie jest dostępny w multiplayer
 
 # config
 mineshot.config.captureWidth=Szerokość
