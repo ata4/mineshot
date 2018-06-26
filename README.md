@@ -28,25 +28,21 @@ Also note that when tiled rendering is disabled, the maximum screenshot size hea
 
 If you use lots of shaders, it's not recommended to enable tiled rendering, since it may cause seams between the individual tiles or other major glitches.
 
-To enable or disable the orthographic camera introduced in 1.4, just press numpad 5. If you have used Blender before, the keys are exactly the same:
+To enable or disable the orthographic camera press **F7**. There are multiple settings which are configured by default as follows. There is a modifier key which is defined as *Control* on Windows and Linux and as *Command* on Mac.
 
- - Numpad 5: Switch between perspective and orthograpic projection
- - Control + Numpad 5: Switch between fixed and free camera
- - Numpad 7: Top view
- - Control + Numpad 7: Bottom view
- - Numpad 1: Front view
- - Control + Numpad 1: Back view
- - Numpad 3: Right side view
- - Control + Numpad 3: Left side view
+ - Semicolon: Let the camera follow the view of the player
+ - Apostrophe: Switch [clipping](https://en.wikipedia.org/wiki/Clipping_(computer_graphics)) distance
+ - Left Bracket: Select next preset
+ - Modifier + Left Bracket: Select previous preset
  
-The camera view can be further configured using these keys. They can be switched to work in steps by holding control at the same time:
+The camera view can be further configured using these keys. They can be switched to work in steps by holding the modifier key at the same time:
 
- - Plus: Zoom in
- - Minus: Zoom out
- - Numpad 4: Rotate left
- - Numpad 6: Rotate right
- - Numpad 8: Rotate up
- - Numpad 2: Rotate down
+ - Right Bracket: Zoom in
+ - Backslash: Zoom out
+ - Left: Rotate left
+ - Right: Rotate right
+ - Up: Rotate up
+ - Down: Rotate down
 
 ## Download
 
