@@ -51,7 +51,6 @@ public class OrthoViewHandler implements PrivateAccessor {
     private final KeyBinding keyFree = new KeyBinding("key.mineshot.ortho.free", Keyboard.KEY_SEMICOLON, KEY_CATEGORY);
     private final KeyBinding keyClip = new KeyBinding("key.mineshot.ortho.clip", Keyboard.KEY_APOSTROPHE, KEY_CATEGORY);
     private final KeyBinding keyPreset = new KeyBinding("key.mineshot.ortho.preset", Keyboard.KEY_LBRACKET, KEY_CATEGORY);
-    private final KeyBinding keyZoomGui = new KeyBinding("key.mineshot.ortho.zoom_gui", Keyboard.KEY_F8, KEY_CATEGORY);
     private final KeyBinding keyZoomIn = new KeyBinding("key.mineshot.ortho.zoom_in", Keyboard.KEY_RBRACKET, KEY_CATEGORY);
     private final KeyBinding keyZoomOut = new KeyBinding("key.mineshot.ortho.zoom_out", Keyboard.KEY_BACKSLASH, KEY_CATEGORY);
     private final KeyBinding keyRotateLeft = new KeyBinding("key.mineshot.ortho.rotate_left", Keyboard.KEY_LEFT, KEY_CATEGORY);
@@ -59,7 +58,7 @@ public class OrthoViewHandler implements PrivateAccessor {
     private final KeyBinding keyRotateUp = new KeyBinding("key.mineshot.ortho.rotate_up", Keyboard.KEY_UP, KEY_CATEGORY);
     private final KeyBinding keyRotateDown = new KeyBinding("key.mineshot.ortho.rotate_down", Keyboard.KEY_DOWN, KEY_CATEGORY);
 
-    Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getMinecraft();
     private final ToggleableClippingHelper clippingHelper = ToggleableClippingHelper.getInstance();
     private boolean clippingEnabled;
     
@@ -67,9 +66,9 @@ public class OrthoViewHandler implements PrivateAccessor {
     private boolean freeCam;
     private boolean clip;
     
-    private static float zoom;
-    private static float xRot;
-    private static float yRot;
+    private float zoom;
+    private float xRot;
+    private float yRot;
     
     private int tick;
     private int tickPrevious;
@@ -83,7 +82,6 @@ public class OrthoViewHandler implements PrivateAccessor {
         ClientRegistry.registerKeyBinding(keyPreset);
         ClientRegistry.registerKeyBinding(keyClip);
         ClientRegistry.registerKeyBinding(keyFree);
-        ClientRegistry.registerKeyBinding(keyZoomGui);
         ClientRegistry.registerKeyBinding(keyZoomIn);
         ClientRegistry.registerKeyBinding(keyZoomOut);
         ClientRegistry.registerKeyBinding(keyRotateLeft);
@@ -94,11 +92,11 @@ public class OrthoViewHandler implements PrivateAccessor {
         reset();
     }
  
-    public void reset() {
+    private void reset() {
         freeCam = false;
         clip = false;
         
-        zoom = 4;
+        zoom = 8;
         xRot = 30;
         yRot = 315;
         tick = 0;
@@ -107,11 +105,11 @@ public class OrthoViewHandler implements PrivateAccessor {
         partialPrevious = 0;
     }
 
-    public boolean isEnabled() {
+    private boolean isEnabled() {
         return enabled;
     }
     
-    public void enable() {
+    private void enable() {
         // disable in multiplayer
         // Of course, programmers could just delete this check and abuse the
         // orthographic camera, but at least the official build won't support it
@@ -129,7 +127,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         enabled = true;
     }
     
-    public void disable() {
+    private void disable() {
         if (enabled) {
             clippingHelper.setEnabled(clippingEnabled);
         }
@@ -137,7 +135,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         enabled = false;
     }
     
-    public void toggle() {
+    private void toggle() {
         if (isEnabled()) {
             disable();
         } else {
@@ -160,20 +158,18 @@ public class OrthoViewHandler implements PrivateAccessor {
             freeCam = !freeCam;
         } else if (keyClip.isPressed()) {
             clip = !clip;
-        } else if (keyPreset.isPressed()) {
+        } else if (keyPreset.isPressed() && !freeCam) {
 
-            // snap to preset depending on current values, doesn't trigger if a preset is already set
-            if (yRot / 90f - Math.floor(yRot / 90f) > 0 || xRot / 90f - Math.floor(xRot / 90f) > 0) {
-                counter = Math.round(yRot / 90f) - 1 - 4 * (int) (Math.round(yRot / 90f) / 4f);
+            // snap to preset depending on current values, doesn't trigger if a preset is already set, ignores presets using xRot != 0
+            if (yRot / 90f - Math.floor(yRot / 90f) != 0 || xRot / 90f - Math.floor(xRot / 90f) != 0) {
+                counter = mod ? (int) Math.floor(yRot / 90f) % 4 : (int) Math.ceil(yRot / 90f) % 4;
+            } else {
+                // change counter, direction depends on modifier key, includes checks to ensure array angles doesn't run out of bounds
+                counter = mod ? ((counter - 1) % 6 + 6) % 6 : (counter + 1) % 6;
             }
 
-            // change counter, direction depends on modifier key, includes checks to ensure array angles doesn't run out of bounds
-            counter = mod ? counter - 1 + 6 * (int) (1 - counter / 6f) : counter + 1 - 6 * (int) (counter / 5f);
             xRot = angles[counter][0] * 90f;
             yRot = angles[counter][1] * 90f;
-        } else if (keyZoomGui.isPressed()) {
-            String modid = null;
-            mc.displayGuiScreen(new ZoomGUI(mc.currentScreen, modid));
         }
 
         // update stepped rotation/zoom controls
@@ -187,19 +183,19 @@ public class OrthoViewHandler implements PrivateAccessor {
             yRot = Math.round(yRot / ROTATE_STEP) * ROTATE_STEP;
             zoom = Math.round(zoom / ZOOM_STEP) * ZOOM_STEP;
 
-            // fixes a bug where zoom could reach 0 due to pressing the modifier key when zoom is already below 0.25
+            // fixes a bug where zoom could reach zero due to pressing the modifier key when zoom is already below 0.25
             zoom += 0.5f * (float) Math.floor(1 / (1f + Math.abs(zoom)));
         }
     }
     
-    public void updateZoomAndRotation(double multi) {
+    private void updateZoomAndRotation(double multi) {
         if (keyZoomIn.isKeyDown()) {
             zoom *= 1 - ZOOM_STEP * multi;
         }
         if (keyZoomOut.isKeyDown()) {
             zoom *= 1 + ZOOM_STEP * multi;
         }
-        
+
         if (keyRotateLeft.isKeyDown()) {
             yRot += ROTATE_STEP * multi;
         }
@@ -215,8 +211,8 @@ public class OrthoViewHandler implements PrivateAccessor {
         }
 
         // don't let rotation exceed 360 degress or take negative values
-        yRot -= 360f * (int) Math.floor(yRot / 360f);
-        xRot -= 360f * (int) Math.floor(xRot / 360f);
+        yRot = ((yRot % 360f) + 360f) % 360f;
+        xRot = ((xRot % 360f) + 360f) % 360f;
     }
     
     @SubscribeEvent
@@ -257,8 +253,8 @@ public class OrthoViewHandler implements PrivateAccessor {
 
         // rotate the orthographic camera with the player view
         if (freeCam) {
-            xRot = MC.player.rotationPitch;
-            yRot = MC.player.rotationYaw - 180;
+            xRot = ((MC.player.rotationPitch % 360f) + 360f) % 360f;
+            yRot = (((MC.player.rotationYaw - 180f) % 360f) + 360f) % 360f;
         }
         
         // override camera view matrix
@@ -270,7 +266,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         // fix particle rotation if the camera isn't following the player view
         if (!freeCam) {
             float pitch = xRot;
-            float yaw = yRot + 180;
+            float yaw = yRot + 180f;
             setRotationX(MathHelper.cos(yaw * (float) Math.PI / 180f));
             setRotationZ(MathHelper.sin(yaw * (float) Math.PI / 180f));
             setRotationYZ(-ActiveRenderInfo.getRotationZ() * MathHelper.sin(pitch * (float) Math.PI / 180f));
@@ -295,13 +291,5 @@ public class OrthoViewHandler implements PrivateAccessor {
             textEvent.getRight().add("Y-Rotation: " + valueDisplay.format(yRot));
             textEvent.getRight().add("X-Rotation: " + valueDisplay.format(xRot));
         }
-    }
-
-    public float getZoom() {
-        return zoom;
-    }
-
-    public void setZoom(float z) {
-        this.zoom = z;
     }
 }
