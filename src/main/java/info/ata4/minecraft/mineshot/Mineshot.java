@@ -38,7 +38,7 @@ public class Mineshot {
     
     public static final String NAME = "Mineshot";
     public static final String ID = "mineshot";
-    public static final String VERSION = "1.73";
+    public static final String VERSION = "@VERSION@";
     
     @Instance(ID)
     public static Mineshot instance;
