@@ -10,11 +10,20 @@ key.mineshot.ortho.rotate_right=Camera Turn Right
 key.mineshot.ortho.rotate_up=Camera Turn Up
 key.mineshot.ortho.rotate_down=Camera Turn Down
 key.mineshot.ortho.preset=Camera Switch Preset
-key.mineshot.ortho.clip=Camera Change Clipping
-key.mineshot.ortho.free=Camera Follow Player
+key.mineshot.ortho.gui=Camera Configuration
 
 # message
-mineshot.ortho.mp=Orthographic perspective not available in multiplayer
+mineshot.ortho.mp=Camera not available in multiplayer
+
+# gui
+mineshot.gui.title=Configure Camera
+mineshot.gui.sliders=Sliders
+mineshot.gui.text=Textboxes
+mineshot.gui.zoom=Zoom
+mineshot.gui.xrot=X-Rotation
+mineshot.gui.yrot=Y-Rotation
+mineshot.gui.view=Follow View
+mineshot.gui.clipping=Clipping
 
 # config
 mineshot.config.captureWidth=Width
