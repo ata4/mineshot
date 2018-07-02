@@ -125,7 +125,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         buttonList.add(buttonTextMinus3);
         buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+35, 4, false);
         buttonList.add(buttonSliderPlus1);
-        buttonSliderMinus1 = new GuiIconButton(31, width/2-156, height/6+35, 3, false);
+        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+35, 3, false);
         buttonList.add(buttonSliderMinus1);
 
         sliderZoom = new GuiSlider(this, 10, width/2-135, height/6+35, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
