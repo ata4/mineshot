@@ -62,8 +62,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private boolean wasTextXRotFocused = false;
     private boolean wasTextYRotFocused = false;
 
-    //To-do
-    //fix layout
+    //Plans
     //changeable slider range
     //single setting mode with clear view and slider on top
 
@@ -99,62 +98,62 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     public void initGui() {
         valueDisplay.setRoundingMode(RoundingMode.HALF_UP);
 
-        GuiButton buttonCancel = new GuiButton(0, width/2-100, height/6+160, 98, 20, I18n.format("gui.cancel"));
+        GuiButton buttonCancel = new GuiButton(0, width/2-99, height/6+165, 99, 20, I18n.format("gui.cancel")); //for whatever eason width needs to be -99 and not -100
         buttonList.add(buttonCancel);
-        GuiButton buttonDone = new GuiButton(1, width/2+2, height/6+160, 98, 20, I18n.format("gui.done"));
+        GuiButton buttonDone = new GuiButton(1, width/2+2, height/6+165, 99, 20, I18n.format("gui.done"));
         buttonList.add(buttonDone);
-        buttonSlider = new GuiButton(2, width/2-100, height/6+20, 98, 20, I18n.format("mineshot.gui.sliders"));
+        buttonSlider = new GuiButton(2, width/2-155, height/6-5, 154, 20, I18n.format("mineshot.gui.sliders"));
         buttonList.add(buttonSlider);
-        buttonText = new GuiButton(3, width/2+2, height/6+20, 98, 20, I18n.format("mineshot.gui.text"));
+        buttonText = new GuiButton(3, width/2+2, height/6-5, 154, 20, I18n.format("mineshot.gui.text"));
         buttonList.add(buttonText);
-        GuiButton buttonFreeCam = new GuiButton(4, width/2-124, height/6+130, 123, 20, getButtonText(4, freeCam ? 1 : 0));
+        GuiButton buttonFreeCam = new GuiButton(4, width/2-155, height/6+115, 154, 20, getButtonText(4, freeCam ? 1 : 0));
         buttonList.add(buttonFreeCam);
-        GuiButton buttonClip = new GuiButton(5, width/2+2, height/6+130, 123, 20, getButtonText(5, clip ? 1 : 0));
+        GuiButton buttonClip = new GuiButton(5, width/2+2, height/6+115, 154, 20, getButtonText(5, clip ? 1 : 0));
         buttonList.add(buttonClip);
 
-        buttonTextPlus1 = new GuiIconButton(20, width/2+105, height/6+50, -1, true);
+        buttonTextPlus1 = new GuiIconButton(20, width/2+136, height/6+35, -1, true);
         buttonList.add(buttonTextPlus1);
-        buttonTextPlus2 = new GuiIconButton(22, width/2+105, height/6+75, -1, true);
+        buttonTextPlus2 = new GuiIconButton(22, width/2+136, height/6+60, -1, true);
         buttonList.add(buttonTextPlus2);
-        buttonTextPlus3 = new GuiIconButton(24, width/2+105, height/6+100, -1, true);
+        buttonTextPlus3 = new GuiIconButton(24, width/2+136, height/6+85, -1, true);
         buttonList.add(buttonTextPlus3);
-        buttonTextMinus1 = new GuiIconButton(21, width/2+105, height/6+60, -2, false);
+        buttonTextMinus1 = new GuiIconButton(21, width/2+136, height/6+45, -2, false);
         buttonList.add(buttonTextMinus1);
-        buttonTextMinus2 = new GuiIconButton(23, width/2+105, height/6+85, -2, false);
+        buttonTextMinus2 = new GuiIconButton(23, width/2+136, height/6+70, -2, false);
         buttonList.add(buttonTextMinus2);
-        buttonTextMinus3 = new GuiIconButton(25, width/2+105, height/6+110, -2, false);
+        buttonTextMinus3 = new GuiIconButton(25, width/2+136, height/6+95, -2, false);
         buttonList.add(buttonTextMinus3);
-        buttonSliderPlus1 = new GuiIconButton(30, width/2+125, height/6+50, 4, false);
+        buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+35, 4, false);
         buttonList.add(buttonSliderPlus1);
-        buttonSliderMinus1 = new GuiIconButton(31, width/2-145, height/6+50, 3, false);
+        buttonSliderMinus1 = new GuiIconButton(31, width/2-156, height/6+35, 3, false);
         buttonList.add(buttonSliderMinus1);
 
-        sliderZoom = new GuiSlider(this, 10, width/2-125, height/6+50, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
+        sliderZoom = new GuiSlider(this, 10, width/2-135, height/6+35, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
             zoomUpdated = value;
             checkZoomButtonsEnabled(zoomUpdated);
             //ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated, freeCamUpdated, clipUpdated, textIsActive);
             return name+": " + valueDisplay.format(zoomUpdated);
         });
-        sliderZoom.width = 250;
+        sliderZoom.width = 271;
         buttonList.add(sliderZoom);
-        sliderXRot = new GuiSlider(this, 11, width/2-125, height/6+75, I18n.format("mineshot.gui.xrot"), 0f, 359.999f, xRotUpdated, (id, name, value) -> {
+        sliderXRot = new GuiSlider(this, 11, width/2-135, height/6+60, I18n.format("mineshot.gui.xrot"), 0f, 359.999f, xRotUpdated, (id, name, value) -> {
             xRotUpdated = value;
             //ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated, freeCamUpdated, clipUpdated, textIsActive);
             return name+": " + valueDisplay.format(xRotUpdated);
         });
-        sliderXRot.width = 250;
+        sliderXRot.width = 271;
         buttonList.add(sliderXRot);
-        sliderYRot = new GuiSlider(this, 12, width/2-125, height/6+100, I18n.format("mineshot.gui.yrot"), 0f, 359.999f, yRotUpdated, (id, name, value) -> {
+        sliderYRot = new GuiSlider(this, 12, width/2-135, height/6+85, I18n.format("mineshot.gui.yrot"), 0f, 359.999f, yRotUpdated, (id, name, value) -> {
             yRotUpdated = value;
             //ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated, freeCamUpdated, clipUpdated, textIsActive);
             return name+": " + valueDisplay.format(yRotUpdated);
         });
-        sliderYRot.width = 250;
+        sliderYRot.width = 271;
         buttonList.add(sliderYRot);
 
-        textZoom = new GuiNumberTextField(13, mc.fontRenderer, width/2-25, height/6+50, 129, 20);
-        textXRot = new GuiNumberTextField(14, mc.fontRenderer, width/2-25, height/6+75, 129, 20);
-        textYRot = new GuiNumberTextField(15, mc.fontRenderer, width/2-25, height/6+100, 129, 20);
+        textZoom = new GuiNumberTextField(13, mc.fontRenderer, width/2-25, height/6+35, 160, 20);
+        textXRot = new GuiNumberTextField(14, mc.fontRenderer, width/2-25, height/6+60, 160, 20);
+        textYRot = new GuiNumberTextField(15, mc.fontRenderer, width/2-25, height/6+85, 160, 20);
         textZoom.setMaxStringLength(7);
         textXRot.setMaxStringLength(7);
         textYRot.setMaxStringLength(7);
@@ -182,12 +181,12 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        drawCenteredString(mc.fontRenderer, I18n.format("mineshot.gui.title"), width/2, height/6, -1);
+        drawCenteredString(mc.fontRenderer, I18n.format("mineshot.gui.title"), width/2, height/6-20, 16777215);
 
         if (textIsActive) {
-            drawCenteredString(mc.fontRenderer, getButtonText(0, 0), width / 2 - 75, height / 6 + 55, -1);
-            drawCenteredString(mc.fontRenderer, getButtonText(0, 1), width / 2 - 75, height / 6 + 80, -1);
-            drawCenteredString(mc.fontRenderer, getButtonText(1, 0), width / 2 - 75, height / 6 + 105, -1);
+            drawCenteredString(mc.fontRenderer, getButtonText(0, 0), width / 2 - 90, height / 6 + 40, 16777215);
+            drawCenteredString(mc.fontRenderer, getButtonText(0, 1), width / 2 - 90, height / 6 + 65, 16777215);
+            drawCenteredString(mc.fontRenderer, getButtonText(1, 0), width / 2 - 90, height / 6 + 90, 16777215);
             textZoom.drawTextBox();
             textXRot.drawTextBox();
             textYRot.drawTextBox();
