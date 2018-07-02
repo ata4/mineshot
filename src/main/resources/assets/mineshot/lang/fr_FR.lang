@@ -10,11 +10,20 @@ key.mineshot.ortho.rotate_right=Caméra-tourner à droite
 key.mineshot.ortho.rotate_up=Caméra-tourner vers le haut
 key.mineshot.ortho.rotate_down=Caméra-tourner vers le bas
 key.mineshot.ortho.preset=Caméra-changer pré-reglage
-key.mineshot.ortho.clip=Caméra-changer le clipping
-key.mineshot.ortho.free=Caméra-suivi du joueur
+key.mineshot.ortho.gui=Caméra-configuration
 
 # message
-mineshot.ortho.mp=La perspective orthographique n'est pas disponible en mode multijoueur.
+mineshot.ortho.mp=La camera n'est pas disponible en multijoueur
+
+# gui
+mineshot.gui.title=Configurer la caméra
+mineshot.gui.sliders=Curseurs
+mineshot.gui.text=Champs de texte
+mineshot.gui.zoom=Zoom
+mineshot.gui.xrot=Rotation X
+mineshot.gui.yrot=Rotation Y
+mineshot.gui.view=Suivi de la vue
+mineshot.gui.clipping=Clipping
 
 # config
 mineshot.config.captureWidth=Largeur

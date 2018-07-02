@@ -10,11 +10,20 @@ key.mineshot.ortho.rotate_right=Kamera nach rechts
 key.mineshot.ortho.rotate_up=Kamera nach oben
 key.mineshot.ortho.rotate_down=Kamera nach unten
 key.mineshot.ortho.preset=Kameraeinstellung wechseln
-key.mineshot.ortho.clip=Kameraclipping ändern
-key.mineshot.ortho.free=Kamerabewegung nach Spieler
+key.mineshot.ortho.gui=Kameraeinstellungen
 
 # message
-mineshot.ortho.mp=Orthographische Perspektive im Mehrspieler-Modus nicht verfügbar
+mineshot.ortho.mp=Kamera im Mehrspieler nicht verfügbar
+
+# gui
+mineshot.gui.title=Kamera konfigurieren
+mineshot.gui.sliders=Schieberegler
+mineshot.gui.text=Textfelder
+mineshot.gui.zoom=Zoom
+mineshot.gui.xrot=X-Rotation
+mineshot.gui.yrot=Y-Rotation
+mineshot.gui.view=Blick folgen
+mineshot.gui.clipping=Clipping
 
 # config
 mineshot.config.captureWidth=Breite
