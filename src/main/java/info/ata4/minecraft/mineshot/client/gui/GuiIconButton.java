@@ -4,6 +4,7 @@ import info.ata4.minecraft.mineshot.Mineshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,6 +16,17 @@ public class GuiIconButton extends GuiButton
     private static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation(Mineshot.MODID, "textures/widgets.png");
     private int iconId;
     private boolean hasBorder;
+
+    public GuiIconButton(int buttonId, GuiButton parent, boolean onRight, int iconId)
+    {
+        this(buttonId, onRight ? parent.x + parent.width : parent.x - 20, parent.y, iconId, false);
+
+    }
+
+    public GuiIconButton(int buttonId, GuiTextField parent, boolean onRight, int iconId)
+    {
+        this(buttonId, onRight ? parent.x + parent.width + 1 : parent.x - 21, parent.y, iconId, true);
+    }
 
     /**
      * Use negative iconIds to make the buttons only half their normal size.

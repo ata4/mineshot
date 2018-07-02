@@ -28,12 +28,18 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private GuiSlider sliderYRot;
     private GuiButton buttonSlider;
     private GuiButton buttonText;
-    private GuiIconButton buttonPlus1;
-    private GuiIconButton buttonPlus2;
-    private GuiIconButton buttonPlus3;
-    private GuiIconButton buttonMinus1;
-    private GuiIconButton buttonMinus2;
-    private GuiIconButton buttonMinus3;
+    private GuiIconButton buttonTextPlus1;
+    private GuiIconButton buttonTextPlus2;
+    private GuiIconButton buttonTextPlus3;
+    private GuiIconButton buttonTextMinus1;
+    private GuiIconButton buttonTextMinus2;
+    private GuiIconButton buttonTextMinus3;
+    private GuiIconButton buttonSliderPlus1;
+    private GuiIconButton buttonSliderPlus2;
+    private GuiIconButton buttonSliderPlus3;
+    private GuiIconButton buttonSliderMinus1;
+    private GuiIconButton buttonSliderMinus2;
+    private GuiIconButton buttonSliderMinus3;
 
     private GuiScreen old;
     private OrthoViewHandler ovh;
@@ -57,10 +63,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private boolean wasTextYRotFocused = false;
 
     //To-do
-    //fix layout of the gui
-    //implement functional modifier key for sliders ?
+    //fix layout
     //changeable slider range
-    //single setting mode with clear view and slider / text box on the top ?
+    //single setting mode with clear view and slider on top
 
     public GuiCamera(OrthoViewHandler ovh, GuiScreen old, float zoom, float xRot, float yRot, boolean freeCam, boolean clip, boolean textIsActive) {
         this.ovh = ovh;
@@ -107,21 +112,26 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         GuiButton buttonClip = new GuiButton(5, width/2+2, height/6+130, 123, 20, getButtonText(5, clip ? 1 : 0));
         buttonList.add(buttonClip);
 
-        buttonPlus1 = new GuiIconButton(20, width/2+105, height/6+50, -1, true);
-        buttonList.add(buttonPlus1);
-        buttonPlus2 = new GuiIconButton(22, width/2+105, height/6+75, -1, true);
-        buttonList.add(buttonPlus2);
-        buttonPlus3 = new GuiIconButton(24, width/2+105, height/6+100, -1, true);
-        buttonList.add(buttonPlus3);
-        buttonMinus1 = new GuiIconButton(21, width/2+105, height/6+60, -2, false);
-        buttonList.add(buttonMinus1);
-        buttonMinus2 = new GuiIconButton(23, width/2+105, height/6+85, -2, false);
-        buttonList.add(buttonMinus2);
-        buttonMinus3 = new GuiIconButton(25, width/2+105, height/6+110, -2, false);
-        buttonList.add(buttonMinus3);
+        buttonTextPlus1 = new GuiIconButton(20, width/2+105, height/6+50, -1, true);
+        buttonList.add(buttonTextPlus1);
+        buttonTextPlus2 = new GuiIconButton(22, width/2+105, height/6+75, -1, true);
+        buttonList.add(buttonTextPlus2);
+        buttonTextPlus3 = new GuiIconButton(24, width/2+105, height/6+100, -1, true);
+        buttonList.add(buttonTextPlus3);
+        buttonTextMinus1 = new GuiIconButton(21, width/2+105, height/6+60, -2, false);
+        buttonList.add(buttonTextMinus1);
+        buttonTextMinus2 = new GuiIconButton(23, width/2+105, height/6+85, -2, false);
+        buttonList.add(buttonTextMinus2);
+        buttonTextMinus3 = new GuiIconButton(25, width/2+105, height/6+110, -2, false);
+        buttonList.add(buttonTextMinus3);
+        buttonSliderPlus1 = new GuiIconButton(30, width/2+125, height/6+50, 4, false);
+        buttonList.add(buttonSliderPlus1);
+        buttonSliderMinus1 = new GuiIconButton(31, width/2-145, height/6+50, 3, false);
+        buttonList.add(buttonSliderMinus1);
 
         sliderZoom = new GuiSlider(this, 10, width/2-125, height/6+50, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
             zoomUpdated = value;
+            checkZoomButtonsEnabled(zoomUpdated);
             //ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated, freeCamUpdated, clipUpdated, textIsActive);
             return name+": " + valueDisplay.format(zoomUpdated);
         });
@@ -151,6 +161,15 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         textZoom.setText(valueDisplay.format(zoomUpdated));
         textXRot.setText(valueDisplay.format(xRotUpdated));
         textYRot.setText(valueDisplay.format(yRotUpdated));
+
+        buttonSliderPlus2 = new GuiIconButton(32, sliderXRot, true, 4);
+        buttonList.add(buttonSliderPlus2);
+        buttonSliderPlus3 = new GuiIconButton(34, sliderYRot, true, 4);
+        buttonList.add(buttonSliderPlus3);
+        buttonSliderMinus2 = new GuiIconButton(33, sliderXRot, false, 3);
+        buttonList.add(buttonSliderMinus2);
+        buttonSliderMinus3 = new GuiIconButton(35, sliderYRot, false, 3);
+        buttonList.add(buttonSliderMinus3);
 
         switchDisplay(false);
         toggleRotation();
@@ -187,12 +206,18 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         sliderZoom.visible = !textIsActive;
         sliderXRot.visible = !textIsActive;
         sliderYRot.visible = !textIsActive;
-        buttonPlus1.visible = textIsActive;
-        buttonPlus2.visible = textIsActive;
-        buttonPlus3.visible = textIsActive;
-        buttonMinus1.visible = textIsActive;
-        buttonMinus2.visible = textIsActive;
-        buttonMinus3.visible = textIsActive;
+        buttonTextPlus1.visible = textIsActive;
+        buttonTextPlus2.visible = textIsActive;
+        buttonTextPlus3.visible = textIsActive;
+        buttonTextMinus1.visible = textIsActive;
+        buttonTextMinus2.visible = textIsActive;
+        buttonTextMinus3.visible = textIsActive;
+        buttonSliderPlus1.visible = !textIsActive;
+        buttonSliderPlus2.visible = !textIsActive;
+        buttonSliderPlus3.visible = !textIsActive;
+        buttonSliderMinus1.visible = !textIsActive;
+        buttonSliderMinus2.visible = !textIsActive;
+        buttonSliderMinus3.visible = !textIsActive;
         if (textIsActive) {
             textZoom.setText(valueDisplay.format(zoomUpdated));
             textXRot.setText(valueDisplay.format(xRotUpdated));
@@ -212,10 +237,14 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         textYRot.setEnabled(!freeCamUpdated);
         sliderXRot.enabled = !freeCamUpdated;
         sliderYRot.enabled = !freeCamUpdated;
-        buttonPlus2.enabled = !freeCamUpdated;
-        buttonMinus2.enabled = !freeCamUpdated;
-        buttonPlus3.enabled = !freeCamUpdated;
-        buttonMinus3.enabled = !freeCamUpdated;
+        buttonTextPlus2.enabled = !freeCamUpdated;
+        buttonTextMinus2.enabled = !freeCamUpdated;
+        buttonTextPlus3.enabled = !freeCamUpdated;
+        buttonTextMinus3.enabled = !freeCamUpdated;
+        buttonSliderPlus2.enabled = !freeCamUpdated;
+        buttonSliderMinus2.enabled = !freeCamUpdated;
+        buttonSliderPlus3.enabled = !freeCamUpdated;
+        buttonSliderMinus3.enabled = !freeCamUpdated;
     }
 
     /**
@@ -304,29 +333,55 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
                 clipUpdated = !clipUpdated;
                 buttonList.get(5).displayString = getButtonText(5, clipUpdated ? 1 : 0);
                 break;
-            case 20: // plus zoom
+            case 20: // plus text zoom
                 zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated), ZOOM_MIN, ZOOM_MAX);
-                textZoom.setText(valueDisplay.format(adjustZoomFromButtons(zoomUpdated, true)));
+                zoomUpdated = adjustZoomFromButtons(zoomUpdated, true);
+                textZoom.setText(valueDisplay.format(zoomUpdated));
                 break;
-            case 21: // minus zoom
+            case 21: // minus text zoom
                 zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated), ZOOM_MIN, ZOOM_MAX);
-                textZoom.setText(valueDisplay.format(adjustZoomFromButtons(zoomUpdated, false)));
+                zoomUpdated = adjustZoomFromButtons(zoomUpdated, false);
+                textZoom.setText(valueDisplay.format(zoomUpdated));
                 break;
-            case 22: // plus xRot
+            case 22: // plus text xRot
                 xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated) + (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
                 textXRot.setText(valueDisplay.format(xRotUpdated));
                 break;
-            case 23: // minus xRot
+            case 23: // minus text xRot
                 xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated) - (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
                 textXRot.setText(valueDisplay.format(xRotUpdated));
                 break;
-            case 24: // plus yRot
+            case 24: // plus text yRot
                 yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) + (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
                 textYRot.setText(valueDisplay.format(yRotUpdated));
                 break;
-            case 25: // minus yRot
+            case 25: // minus text yRot
                 yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) - (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
                 textYRot.setText(valueDisplay.format(yRotUpdated));
+                break;
+            case 30: // plus slider zoom
+                zoomUpdated = adjustZoomFromButtons(zoomUpdated, true);
+                sliderZoom.setSliderValue(zoomUpdated, false);
+                break;
+            case 31: // minus slider zoom
+                zoomUpdated = adjustZoomFromButtons(zoomUpdated, false);
+                sliderZoom.setSliderValue(zoomUpdated, false);
+                break;
+            case 32: // plus slider xRot
+                xRotUpdated = ovh.fixValue(xRotUpdated + (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
+                sliderXRot.setSliderValue(xRotUpdated, false);
+                break;
+            case 33: // minus slider xRot
+                xRotUpdated = ovh.fixValue(xRotUpdated - (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
+                sliderXRot.setSliderValue(xRotUpdated, false);
+                break;
+            case 34: // plus slider yRot
+                yRotUpdated = ovh.fixValue(yRotUpdated + (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
+                sliderYRot.setSliderValue(yRotUpdated, false);
+                break;
+            case 35: // minus slider yRot
+                yRotUpdated = ovh.fixValue(yRotUpdated - (ovh.modifierKeyPressed() ? ROTATE_STEP : 1f));
+                sliderYRot.setSliderValue(yRotUpdated, false);
                 break;
         }
     }
@@ -342,10 +397,21 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             zoomVal = isModeAdd ? (zoomVal + 1f) : (zoomVal - 1f);
         }
         zoomVal = ovh.fixValue(zoomVal, ZOOM_MIN, ZOOM_MAX);
-        // Disables plus or minus buttons if clicking them wouldn't be able to change the current value.
-        buttonPlus1.enabled = (ZOOM_MAX != zoomVal);
-        buttonMinus1.enabled = (ZOOM_MIN != zoomVal);
+        checkZoomButtonsEnabled(zoomVal);
         return zoomVal;
+    }
+
+    /**
+     * Disables plus or minus button for zoom if clicking them wouldn't be able to change the current value.
+     */
+    private void checkZoomButtonsEnabled(float zoomVal) {
+        if (textIsActive) {
+            buttonTextPlus1.enabled = (ZOOM_MAX != zoomVal);
+            buttonTextMinus1.enabled = (ZOOM_MIN != zoomVal);
+        } else {
+            buttonSliderPlus1.enabled = (ZOOM_MAX != zoomVal);
+            buttonSliderMinus1.enabled = (ZOOM_MIN != zoomVal);
+        }
     }
 
     /**
@@ -355,8 +421,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         if (!textZoom.isFocused() && wasTextZoomFocused) {
             zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated), ZOOM_MIN, ZOOM_MAX);
             textZoom.setText(valueDisplay.format(zoomUpdated));
-            buttonPlus1.enabled = (ZOOM_MAX != zoomUpdated);
-            buttonMinus1.enabled = (ZOOM_MIN != zoomUpdated);
+            checkZoomButtonsEnabled(zoomUpdated);
         } else if (!textXRot.isFocused() && wasTextXRotFocused) {
             xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated));
             textXRot.setText(valueDisplay.format(xRotUpdated));
