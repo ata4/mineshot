@@ -10,7 +10,7 @@ import net.minecraft.client.resources.I18n;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-public class GuiCameraSingle extends GuiScreen implements GuiPageButtonList.GuiResponder {
+public class GuiCameraRange extends GuiScreen implements GuiPageButtonList.GuiResponder {
 
     private static final float ZOOM_STEP = 0.5f;
     private static final float ZOOM_MIN = 0.5f;

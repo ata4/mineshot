@@ -322,4 +322,13 @@ public class OrthoViewHandler implements PrivateAccessor {
         clip = clipping;
         textIsActive = text;
     }
+
+    /**
+     * Accessed by GuiCamera for updating values when it finishes.
+     */
+    public void updateFromGui(float z, float x, float y) {
+        zoom = z;
+        xRot = x;
+        yRot = y;
+    }
 }

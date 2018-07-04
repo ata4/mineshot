@@ -17,8 +17,6 @@ mineshot.ortho.mp=Camera not available in multiplayer
 
 # gui
 mineshot.gui.title=Configure Camera
-mineshot.gui.sliders=Sliders
-mineshot.gui.text=Textboxes
 mineshot.gui.zoom=Zoom
 mineshot.gui.xrot=X-Rotation
 mineshot.gui.yrot=Y-Rotation

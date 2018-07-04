@@ -17,8 +17,6 @@ mineshot.ortho.mp=Kamera nie jest dostępny w multiplayer
 
 # gui
 mineshot.gui.title=Konfiguruj kamerę
-mineshot.gui.sliders=Suwaki
-mineshot.gui.text=Pola tekstowe
 mineshot.gui.zoom=Zoom
 mineshot.gui.xrot=Rotacja w osi X
 mineshot.gui.yrot=Rotacja w osi Y
