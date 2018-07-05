@@ -14,26 +14,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiIconButton extends GuiButton
 {
     private static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation(Mineshot.MODID, "textures/widgets.png");
-    private int iconId;
+    private int[] iconId;
     private boolean hasBorder;
-
-    public GuiIconButton(int buttonId, GuiButton parent, boolean onRight, int iconId)
-    {
-        this(buttonId, onRight ? parent.x + parent.width : parent.x - 20, parent.y, iconId, false);
-
-    }
-
-    public GuiIconButton(int buttonId, GuiTextField parent, boolean onRight, int iconId)
-    {
-        this(buttonId, onRight ? parent.x + parent.width + 1 : parent.x - 21, parent.y, iconId, true);
-    }
+    private int displayState;
 
     /**
      * Use negative iconIds to make the buttons only half their normal size.
      */
-    public GuiIconButton(int buttonId, int x, int y, int iconId, boolean hasBorder)
+    public GuiIconButton(int buttonId, int x, int y, int[] iconId, boolean hasBorder)
     {
-        super(buttonId, x, y, 20, Math.round((iconId + Math.abs(iconId)) / (float) (iconId + Math.abs(iconId) + 1)) * 10 + 10, "");
+        super(buttonId, x, y, 20, Math.round((iconId[0] + Math.abs(iconId[0])) / (float) (iconId[0] + Math.abs(iconId[0]) + 1)) * 10 + 10, "");
         this.iconId = iconId;
         this.hasBorder = hasBorder;
     }
@@ -53,8 +43,18 @@ public class GuiIconButton extends GuiButton
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int i = this.getHoverState(this.hovered);
-            this.drawTexturedModalRect(this.x, this.y, Math.abs(iconId) * 20, i * 20, this.width, this.height);
+            this.drawTexturedModalRect(this.x, this.y, Math.abs(iconId[displayState % iconId.length]) * 20, i * 20, this.width, this.height);
         }
+    }
+
+    public int getDisplayState()
+    {
+        return this.displayState;
+    }
+
+    public void setDisplayState(int displayStateIn)
+    {
+        this.displayState = displayStateIn;
     }
 
     /**

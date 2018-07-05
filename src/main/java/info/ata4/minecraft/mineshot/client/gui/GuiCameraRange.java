@@ -46,9 +46,9 @@ public class GuiCameraRange extends GuiScreen implements GuiPageButtonList.GuiRe
         GuiButton buttonDone = new GuiButton(1, width/2+2, height/6+160, 98, 20, I18n.format("gui.done"));
         buttonList.add(buttonDone);
 
-        buttonPlus = new GuiIconButton(30, width/2+125, height/6+50, 4, false);
+        buttonPlus = new GuiIconButton(30, width/2+125, height/6+50, new int[] {4}, false);
         buttonList.add(buttonPlus);
-        buttonMinus = new GuiIconButton(31, width/2-145, height/6+50, 3, false);
+        buttonMinus = new GuiIconButton(31, width/2-145, height/6+50, new int[] {3}, false);
         buttonList.add(buttonMinus);
 /**
         slider = new GuiSlider(this, 10, width/2-125, height/6+50, 250, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
