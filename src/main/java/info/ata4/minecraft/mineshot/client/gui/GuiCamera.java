@@ -31,7 +31,11 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private GuiButton buttonSlider;
     private GuiButton buttonText;
     private GuiIconButton buttonTextPlus1;
+    private GuiIconButton buttonTextPlus2;
+    private GuiIconButton buttonTextPlus3;
     private GuiIconButton buttonTextMinus1;
+    private GuiIconButton buttonTextMinus2;
+    private GuiIconButton buttonTextMinus3;
     private GuiIconButton buttonSliderPlus1;
     private GuiIconButton buttonSliderPlus2;
     private GuiIconButton buttonSliderPlus3;
@@ -47,6 +51,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private GuiIconButton buttonSliderSettings1;
     private GuiIconButton buttonSliderSettings2;
     private GuiIconButton buttonSliderSettings3;
+    private GuiIconButton buttonReset1;
+    private GuiIconButton buttonReset2;
+    private GuiIconButton buttonReset3;
 
     private GuiScreen old;
     private OrthoViewHandler ovh;
@@ -66,6 +73,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
 
     private boolean textIsActive;
     private boolean focusIsActive;
+    private boolean mouseNotOverButton;
     private boolean wasTextZoomFocused;
     private boolean wasTextXRotFocused;
     private boolean wasTextYRotFocused;
@@ -77,9 +85,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
 
     // Plans
     // changeable slider range
-    // single text box mode
     // increment buttons showing their value
-    // reset buttons in single slider mode and text view ?
 
     public GuiCamera(OrthoViewHandler ovh, GuiScreen old, float zoom, float xRot, float yRot, boolean freeCam, boolean clip, boolean textIsActive) {
         this.ovh = ovh;
@@ -128,28 +134,28 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
 
         buttonTextPlus1 = new GuiIconButton(20, width/2+136, height/6+20, new int[] {-1}, true);
         buttonList.add(buttonTextPlus1);
-        GuiIconButton buttonTextPlus2 = new GuiIconButton(22, width/2+136, height/6+45, new int[] {-1}, true);
+        buttonTextPlus2 = new GuiIconButton(22, width/2+136, height/6+45, new int[] {-1}, true);
         buttonList.add(buttonTextPlus2);
-        GuiIconButton buttonTextPlus3 = new GuiIconButton(24, width/2+136, height/6+70, new int[] {-1}, true);
+        buttonTextPlus3 = new GuiIconButton(24, width/2+136, height/6+70, new int[] {-1}, true);
         buttonList.add(buttonTextPlus3);
         buttonTextMinus1 = new GuiIconButton(21, width/2+136, height/6+30, new int[] {-2}, false);
         buttonList.add(buttonTextMinus1);
-        GuiIconButton buttonTextMinus2 = new GuiIconButton(23, width/2+136, height/6+55, new int[] {-2}, false);
+        buttonTextMinus2 = new GuiIconButton(23, width/2+136, height/6+55, new int[] {-2}, false);
         buttonList.add(buttonTextMinus2);
-        GuiIconButton buttonTextMinus3 = new GuiIconButton(25, width/2+136, height/6+80, new int[] {-2}, false);
+        buttonTextMinus3 = new GuiIconButton(25, width/2+136, height/6+80, new int[] {-2}, false);
         buttonList.add(buttonTextMinus3);
 
-        buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+20, new int[] {4}, false);
+        buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+20, new int[] {4, 0}, false);
         buttonList.add(buttonSliderPlus1);
-        buttonSliderPlus2 = new GuiIconButton(32, width/2+136, height/6+45, new int[] {4}, false);
+        buttonSliderPlus2 = new GuiIconButton(32, width/2+136, height/6+45, new int[] {4, 0}, false);
         buttonList.add(buttonSliderPlus2);
-        buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4}, false);
+        buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4, 0}, false);
         buttonList.add(buttonSliderPlus3);
-        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3}, false);
+        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3, 0}, false);
         buttonList.add(buttonSliderMinus1);
-        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3}, false);
+        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3, 0}, false);
         buttonList.add(buttonSliderMinus2);
-        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3}, false);
+        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3, 0}, false);
         buttonList.add(buttonSliderMinus3);
 
         buttonTextFocus1 = new GuiIconButton(26, width/2+159, height/6+20, new int[] {5, 6}, false);
@@ -171,6 +177,12 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         buttonList.add(buttonSliderSettings2);
         buttonSliderSettings3 = new GuiIconButton(15, width/2-178, height/6+70, new int[] {7 ,8}, false);
         buttonList.add(buttonSliderSettings3);
+        buttonReset1 = new GuiIconButton(16, width/2-48, height/6+20, new int[] {8}, false);
+        buttonList.add(buttonReset1);
+        buttonReset2 = new GuiIconButton(17, width/2-48, height/6+45, new int[] {8}, false);
+        buttonList.add(buttonReset2);
+        buttonReset3 = new GuiIconButton(18, width/2-48, height/6+70, new int[] {8}, false);
+        buttonList.add(buttonReset3);
 
         sliderZoom = new GuiSlider(this, 10, width/2-135, height/6+20, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
             zoomUpdated = value;
@@ -217,14 +229,18 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         if (!focusIsActive) {
             drawDefaultBackground();
             drawCenteredString(mc.fontRenderer, I18n.format("mineshot.gui.title"), width / 2, height / 6 - 15, 16777215);
-            if ((buttonSliderSettings1.getDisplayState() == 1 || buttonSliderSettings2.getDisplayState() == 1  || buttonSliderSettings3.getDisplayState() == 1) && !GuiScreen.isCtrlKeyDown()) {
-                buttonSliderSettings1.setDisplayState(0);
-                buttonSliderSettings2.setDisplayState(0);
-                buttonSliderSettings3.setDisplayState(0);
-            }
         }
+        ctrlKeyAction();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        if (textIsActive) {
+        if (textIsActive && focusIsActive) {
+            if (buttonTextFocus1.getDisplayState() == 1) {
+                textZoom.drawTextBox();
+            } else if (buttonTextFocus2.getDisplayState() == 1) {
+                textXRot.drawTextBox();
+            } else if (buttonTextFocus3.getDisplayState() == 1) {
+                textYRot.drawTextBox();
+            }
+        } else if (textIsActive) {
             drawCenteredString(mc.fontRenderer, getButtonText(0, 0), width / 2 - 90, height / 6 + 25, 16777215);
             drawCenteredString(mc.fontRenderer, getButtonText(0, 1), width / 2 - 90, height / 6 + 50, 16777215);
             drawCenteredString(mc.fontRenderer, getButtonText(1, 0), width / 2 - 90, height / 6 + 75, 16777215);
@@ -232,6 +248,65 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             textXRot.drawTextBox();
             textYRot.drawTextBox();
         }
+    }
+
+    private void ctrlKeyAction() {
+        boolean sliderAlreadyActive = buttonSliderSettings1.getDisplayState() == 1 || buttonSliderSettings2.getDisplayState() == 1  || buttonSliderSettings3.getDisplayState() == 1;
+        boolean resetAlreadyActive = buttonReset1.visible || buttonReset2.visible || buttonReset3.visible;
+        if (mouseNotOverButton) {
+            if (!textIsActive && (buttonReset1.x != width/2-178 || buttonReset2.x != width/2-178 || buttonReset3.x != width/2-178)) {
+                buttonReset1.x = width/2-178;
+                buttonReset2.x = width/2-178;
+                buttonReset3.x = width/2-178;
+            } else if (textIsActive && (buttonReset1.x != width/2-48 || buttonReset2.x != width/2-48 || buttonReset3.x != width/2-48)) {
+                buttonReset1.x = width/2-48;
+                buttonReset2.x = width/2-48;
+                buttonReset3.x = width/2-48;
+            }
+            if (!focusIsActive) {
+                if (zoomUpdated != ZOOM_DEFAULT) {
+                    if (textIsActive) {
+                        buttonReset1.visible = true;
+                    } else {
+                        buttonSliderSettings1.setDisplayState(1);
+                    }
+                }
+                if (!freeCamUpdated) {
+                    if (xRotUpdated != XROT_DEFAULT) {
+                        if (textIsActive) {
+                            buttonReset2.visible = true;
+                        } else {
+                            buttonSliderSettings2.setDisplayState(1);
+                        }
+                    }
+                    if (yRotUpdated != YROT_DEFAULT) {
+                        if (textIsActive) {
+                            buttonReset3.visible = true;
+                        } else {
+                            buttonSliderSettings3.setDisplayState(1);
+                        }
+                    }
+                }
+            } else {
+                if (zoomUpdated != ZOOM_DEFAULT && (buttonSliderFocus1.visible || buttonTextFocus1.visible)) {
+                    buttonReset1.visible = true;
+                } else if (xRotUpdated != XROT_DEFAULT && (buttonSliderFocus2.visible || buttonTextFocus2.visible)) {
+                    buttonReset2.visible = true;
+                } else if (yRotUpdated != YROT_DEFAULT && (buttonSliderFocus3.visible || buttonTextFocus3.visible)) {
+                    buttonReset3.visible = true;
+                }
+            }
+            mouseNotOverButton = GuiScreen.isCtrlKeyDown();
+        } else if (sliderAlreadyActive) {
+            buttonSliderSettings1.setDisplayState(0);
+            buttonSliderSettings2.setDisplayState(0);
+            buttonSliderSettings3.setDisplayState(0);
+        } else if (resetAlreadyActive) {
+            buttonReset1.visible = false;
+            buttonReset2.visible = false;
+            buttonReset3.visible = false;
+        }
+
     }
 
     /**
@@ -268,7 +343,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
      */
     private void enableSingleView(int[] array, boolean state, int exclude) {
         for ( int i = 0; i <= array.length - 1; i++ ) {
-            if (array[i] != exclude * 2 - 41 && array[i] != exclude * 2 - 42 && array[i] != exclude - 26 && array[i] != exclude) {
+            boolean exclusionSlider = array[i] != exclude * 2 - 41 && array[i] != exclude * 2 - 42 && array[i] != exclude - 26;
+            boolean exclusionText = array[i] != exclude * 2 - 31 && array[i] != exclude * 2 - 32;
+            if (exclusionSlider && exclusionText && array[i] != exclude) {
                 for (int j = 0; j <= buttonList.size() - 1; j++) {
                     int k = buttonList.get(j).id;
                     if (k == array[i] && buttonList.get(j).visible != state) {
@@ -378,22 +455,49 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
                 if (buttonSliderSettings1.getDisplayState() == 1) {
                     zoomUpdated = ZOOM_DEFAULT;
                     sliderZoom.setSliderValue(zoomUpdated, false);
-                    buttonSliderSettings1.setDisplayState(buttonSliderSettings1.getDisplayState() + 1);
+                    buttonSliderSettings1.setDisplayState(0);
                 }
                 break;
             case 14:
                 if (buttonSliderSettings2.getDisplayState() == 1) {
                     xRotUpdated = XROT_DEFAULT;
                     sliderXRot.setSliderValue(xRotUpdated, false);
-                    buttonSliderSettings2.setDisplayState(buttonSliderSettings2.getDisplayState() + 1);
+                    buttonSliderSettings2.setDisplayState(0);
                 }
                 break;
             case 15:
                 if (buttonSliderSettings3.getDisplayState() == 1) {
                     yRotUpdated = YROT_DEFAULT;
                     sliderYRot.setSliderValue(yRotUpdated, false);
-                    buttonSliderSettings3.setDisplayState(buttonSliderSettings3.getDisplayState() + 1);
+                    buttonSliderSettings3.setDisplayState(0);
                 }
+                break;
+            case 16:
+                zoomUpdated = ZOOM_DEFAULT;
+                if (textIsActive) {
+                    textZoom.setText(valueDisplay.format(zoomUpdated));
+                } else {
+                    sliderZoom.setSliderValue(zoomUpdated, false);
+                }
+                buttonReset1.visible = false;
+                break;
+            case 17:
+                xRotUpdated = XROT_DEFAULT;
+                if (textIsActive) {
+                    textXRot.setText(valueDisplay.format(xRotUpdated));
+                } else {
+                    sliderXRot.setSliderValue(xRotUpdated, false);
+                }
+                buttonReset2.visible = false;
+                break;
+            case 18:
+                yRotUpdated = YROT_DEFAULT;
+                if (textIsActive) {
+                    textYRot.setText(valueDisplay.format(yRotUpdated));
+                } else {
+                    sliderYRot.setSliderValue(yRotUpdated, false);
+                }
+                buttonReset3.visible = false;
                 break;
             case 20: // plus text zoom
                 zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated) + getIncrement(), ZOOM_MIN, ZOOM_MAX);
@@ -420,6 +524,15 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             case 25: // minus text yRot
                 yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) - getIncrement());
                 textYRot.setText(valueDisplay.format(yRotUpdated));
+                break;
+            case 26: // focus text zoom
+                activateFocus(buttonTextFocus1, true);
+                break;
+            case 27: // focus text xRot
+                activateFocus(buttonTextFocus2, true);
+                break;
+            case 28: // focus text yRot
+                activateFocus(buttonTextFocus3, true);
                 break;
             case 30: // plus slider zoom
                 zoomUpdated = ovh.fixValue(zoomUpdated + getIncrement(), ZOOM_MIN, ZOOM_MAX);
@@ -467,6 +580,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             i = 2;
         }
         if (GuiScreen.isCtrlKeyDown()) {
+            if (mouseNotOverButton) {
+                mouseNotOverButton = false;
+            }
             return (float) Math.pow(10, -i-1);
         } else {
             return (float) Math.pow(10, i);
@@ -478,7 +594,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         enableSingleView(isTextMode ? buttonsTextView : buttonsSliderView, !focusIsActive, pressedButton.id);
         toggleUIElements(buttonsGeneralUI, !focusIsActive, false);
         pressedButton.setDisplayState(pressedButton.getDisplayState() + 1);
-        ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated);
     }
 
     /**
@@ -558,6 +673,12 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+        boolean mouseOverSliderPlus = buttonSliderPlus1.isMouseOver() || buttonSliderPlus2.isMouseOver() || buttonSliderPlus3.isMouseOver();
+        boolean mouseOverSliderMinus = buttonSliderMinus1.isMouseOver() || buttonSliderMinus2.isMouseOver() || buttonSliderMinus3.isMouseOver();
+        boolean mouseOverTextPlus = buttonTextPlus1.isMouseOver() || buttonTextPlus2.isMouseOver() || buttonTextPlus3.isMouseOver();
+        boolean mouseOverTextMinus = buttonTextMinus1.isMouseOver() || buttonTextMinus2.isMouseOver() || buttonTextMinus3.isMouseOver();
+        boolean textBoxFocused = textIsActive && (textZoom.isFocused() || textXRot.isFocused() || textYRot.isFocused());
+        mouseNotOverButton = GuiScreen.isCtrlKeyDown() && !textBoxFocused && !mouseOverSliderPlus && !mouseOverSliderMinus && !mouseOverTextPlus && !mouseOverTextMinus;
         if (textIsActive) {
             textZoom.textboxKeyTyped(typedChar, keyCode);
             if (!freeCamUpdated) {
@@ -565,8 +686,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
                 textYRot.textboxKeyTyped(typedChar, keyCode);
             }
         }
-        boolean mouseOverPlus = buttonSliderPlus1.isMouseOver() || buttonSliderPlus2.isMouseOver() || buttonSliderPlus3.isMouseOver();
-        boolean mouseOverMinus = buttonSliderMinus1.isMouseOver() || buttonSliderMinus2.isMouseOver() || buttonSliderMinus3.isMouseOver();
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             ovh.updateFromGui(zoom, xRot, yRot, freeCam, clip, textIsActive);
         } else if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) && textIsActive) {
@@ -577,18 +696,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             }
             updateUnfocusedTextBoxes();
             ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated);
-        } else if (!mouseOverPlus && !mouseOverMinus && !textIsActive && !focusIsActive && GuiScreen.isCtrlKeyDown()) {
-            if (zoomUpdated != ZOOM_DEFAULT) {
-                buttonSliderSettings1.setDisplayState(buttonSliderSettings1.getDisplayState() + 1);
-            }
-            if (!freeCamUpdated) {
-                if (xRotUpdated != XROT_DEFAULT) {
-                    buttonSliderSettings2.setDisplayState(buttonSliderSettings2.getDisplayState() + 1);
-                }
-                if (yRotUpdated != YROT_DEFAULT) {
-                    buttonSliderSettings3.setDisplayState(buttonSliderSettings3.getDisplayState() + 1);
-                }
-            }
         }
     }
 
@@ -608,11 +715,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         }
         if (!this.buttonCancel.isMouseOver()) {
             this.ovh.updateFromGui(this.zoomUpdated, this.xRotUpdated, this.yRotUpdated, this.freeCamUpdated, this.clipUpdated, this.textIsActive);
-        }
-        if ((buttonSliderSettings1.getDisplayState() == 1 || buttonSliderSettings2.getDisplayState() == 1 || buttonSliderSettings3.getDisplayState() == 1) && !buttonSliderSettings1.isMouseOver() && !buttonSliderSettings2.isMouseOver() && !buttonSliderSettings3.isMouseOver()) {
-            buttonSliderSettings1.setDisplayState(0);
-            buttonSliderSettings2.setDisplayState(0);
-            buttonSliderSettings3.setDisplayState(0);
         }
     }
 
