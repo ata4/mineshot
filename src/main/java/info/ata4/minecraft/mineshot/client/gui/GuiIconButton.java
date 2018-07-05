@@ -41,9 +41,10 @@ public class GuiIconButton extends GuiButton
             }
             mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            displayState = displayState % iconId.length;
             hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int i = this.getHoverState(this.hovered);
-            this.drawTexturedModalRect(this.x, this.y, Math.abs(iconId[displayState % iconId.length]) * 20, i * 20, this.width, this.height);
+            this.drawTexturedModalRect(this.x, this.y, Math.abs(iconId[displayState]) * 20, i * 20, this.width, this.height);
         }
     }
 

@@ -15,10 +15,11 @@ import java.text.DecimalFormat;
 
 public class GuiCamera extends GuiScreen implements GuiResponder {
 
-    private static final float ZOOM_STEP = 0.5f;
+    private static final float ZOOM_DEFAULT = 8f;
     private static final float ZOOM_MIN = 0.5f;
     private static final float ZOOM_MAX = 512f;
-    private static final float ROTATE_STEP = 15f;
+    private static final float XROT_DEFAULT = 30f;
+    private static final float YROT_DEFAULT = 315f;
 
     private GuiNumberTextField textZoom;
     private GuiNumberTextField textXRot;
@@ -32,13 +33,20 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private GuiIconButton buttonTextPlus1;
     private GuiIconButton buttonTextMinus1;
     private GuiIconButton buttonSliderPlus1;
+    private GuiIconButton buttonSliderPlus2;
+    private GuiIconButton buttonSliderPlus3;
     private GuiIconButton buttonSliderMinus1;
+    private GuiIconButton buttonSliderMinus2;
+    private GuiIconButton buttonSliderMinus3;
     private GuiIconButton buttonSliderFocus1;
     private GuiIconButton buttonSliderFocus2;
     private GuiIconButton buttonSliderFocus3;
     private GuiIconButton buttonTextFocus1;
     private GuiIconButton buttonTextFocus2;
     private GuiIconButton buttonTextFocus3;
+    private GuiIconButton buttonSliderSettings1;
+    private GuiIconButton buttonSliderSettings2;
+    private GuiIconButton buttonSliderSettings3;
 
     private GuiScreen old;
     private OrthoViewHandler ovh;
@@ -62,15 +70,16 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private boolean wasTextXRotFocused;
     private boolean wasTextYRotFocused;
 
-    private final int[] buttonsSliderView = {10, 11, 12, 30, 31, 32, 33, 34, 35, 36, 37, 38};
+    private final int[] buttonsSliderView = {10, 11, 12, 13, 14, 15, 30, 31, 32, 33, 34, 35, 36, 37, 38};
     private final int[] buttonsTextView = {20, 21, 22, 23, 24, 25, 26, 27, 28};
     private final int[] buttonsGeneralUI = {0, 1, 2, 3, 4, 5};
-    private final int[] buttonsFreeCam = {11, 12, 22, 23, 24, 25, 27, 28, 32, 33, 34, 35, 37, 38};
+    private final int[] buttonsFreeCam = {11, 12, 14, 15, 22, 23, 24, 25, 27, 28, 32, 33, 34, 35, 37, 38};
 
-    //Plans
-    //changeable slider range
-    //single slider mode with clear view
-    //reset buttons
+    // Plans
+    // changeable slider range
+    // single text box mode
+    // finish reset buttons
+    // increment buttons showing their value
 
     public GuiCamera(OrthoViewHandler ovh, GuiScreen old, float zoom, float xRot, float yRot, boolean freeCam, boolean clip, boolean textIsActive) {
         this.ovh = ovh;
@@ -132,15 +141,15 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
 
         buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+20, new int[] {4}, false);
         buttonList.add(buttonSliderPlus1);
-        GuiIconButton buttonSliderPlus2 = new GuiIconButton(32, width/2+136, height/6+45, new int[] {4}, false);
+        buttonSliderPlus2 = new GuiIconButton(32, width/2+136, height/6+45, new int[] {4}, false);
         buttonList.add(buttonSliderPlus2);
-        GuiIconButton buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4}, false);
+        buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4}, false);
         buttonList.add(buttonSliderPlus3);
         buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3}, false);
         buttonList.add(buttonSliderMinus1);
-        GuiIconButton buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3}, false);
+        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3}, false);
         buttonList.add(buttonSliderMinus2);
-        GuiIconButton buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3}, false);
+        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3}, false);
         buttonList.add(buttonSliderMinus3);
 
         buttonTextFocus1 = new GuiIconButton(26, width/2+159, height/6+20, new int[] {5, 6}, false);
@@ -155,6 +164,13 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         buttonList.add(buttonSliderFocus2);
         buttonSliderFocus3 = new GuiIconButton(38, width/2+159, height/6+70, new int[] {5, 6}, false);
         buttonList.add(buttonSliderFocus3);
+
+        buttonSliderSettings1 = new GuiIconButton(13, width/2-178, height/6+20, new int[] {7 ,8}, false);
+        buttonList.add(buttonSliderSettings1);
+        buttonSliderSettings2 = new GuiIconButton(14, width/2-178, height/6+45, new int[] {7 ,8}, false);
+        buttonList.add(buttonSliderSettings2);
+        buttonSliderSettings3 = new GuiIconButton(15, width/2-178, height/6+70, new int[] {7 ,8}, false);
+        buttonList.add(buttonSliderSettings3);
 
         sliderZoom = new GuiSlider(this, 10, width/2-135, height/6+20, I18n.format("mineshot.gui.zoom"), ZOOM_MIN, ZOOM_MAX, zoomUpdated, (id, name, value) -> {
             zoomUpdated = value;
@@ -179,9 +195,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         sliderYRot.width = 271;
         buttonList.add(sliderYRot);
 
-        textZoom = new GuiNumberTextField(13, mc.fontRenderer, width/2-25, height/6+20, 160, 20);
-        textXRot = new GuiNumberTextField(14, mc.fontRenderer, width/2-25, height/6+45, 160, 20);
-        textYRot = new GuiNumberTextField(15, mc.fontRenderer, width/2-25, height/6+70, 160, 20);
+        textZoom = new GuiNumberTextField(0, mc.fontRenderer, width/2-25, height/6+20, 160, 20);
+        textXRot = new GuiNumberTextField(1, mc.fontRenderer, width/2-25, height/6+45, 160, 20);
+        textYRot = new GuiNumberTextField(2, mc.fontRenderer, width/2-25, height/6+70, 160, 20);
         textZoom.setMaxStringLength(7);
         textXRot.setMaxStringLength(7);
         textYRot.setMaxStringLength(7);
@@ -201,6 +217,11 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         if (!focusIsActive) {
             drawDefaultBackground();
             drawCenteredString(mc.fontRenderer, I18n.format("mineshot.gui.title"), width / 2, height / 6 - 15, 16777215);
+            if (buttonSliderSettings1.getDisplayState() == 1 && !GuiScreen.isCtrlKeyDown()) {
+                buttonSliderSettings1.setDisplayState(buttonSliderSettings1.getDisplayState() + 1);
+                buttonSliderSettings2.setDisplayState(buttonSliderSettings2.getDisplayState() + 1);
+                buttonSliderSettings3.setDisplayState(buttonSliderSettings3.getDisplayState() + 1);
+            }
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
         if (textIsActive) {
@@ -352,6 +373,24 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             case 5: // clipping
                 clipUpdated = !clipUpdated;
                 buttonList.get(5).displayString = getButtonText(5, clipUpdated ? 1 : 0);
+                break;
+            case 13:
+                if (buttonSliderSettings1.getDisplayState() == 1) {
+                    zoomUpdated = ZOOM_DEFAULT;
+                    sliderZoom.setSliderValue(zoomUpdated, false);
+                }
+                break;
+            case 14:
+                if (buttonSliderSettings2.getDisplayState() == 1) {
+                    xRotUpdated = XROT_DEFAULT;
+                    sliderXRot.setSliderValue(xRotUpdated, false);
+                }
+                break;
+            case 15:
+                if (buttonSliderSettings3.getDisplayState() == 1) {
+                    yRotUpdated = YROT_DEFAULT;
+                    sliderYRot.setSliderValue(yRotUpdated, false);
+                }
                 break;
             case 20: // plus text zoom
                 zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated) + getIncrement(), ZOOM_MIN, ZOOM_MAX);
@@ -523,6 +562,8 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
                 textYRot.textboxKeyTyped(typedChar, keyCode);
             }
         }
+        boolean mouseOverPlus = buttonSliderPlus1.isMouseOver() || buttonSliderPlus2.isMouseOver() || buttonSliderPlus3.isMouseOver();
+        boolean mouseOverMinus = buttonSliderMinus1.isMouseOver() || buttonSliderMinus2.isMouseOver() || buttonSliderMinus3.isMouseOver();
         if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
             ovh.updateFromGui(zoom, xRot, yRot, freeCam, clip, textIsActive);
         } else if (Keyboard.isKeyDown(Keyboard.KEY_RETURN) && textIsActive) {
@@ -533,6 +574,18 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             }
             updateUnfocusedTextBoxes();
             ovh.updateFromGui(zoomUpdated, xRotUpdated, yRotUpdated);
+        } else if (!mouseOverPlus && !mouseOverMinus && !textIsActive && !focusIsActive && GuiScreen.isCtrlKeyDown()) {
+            if (zoomUpdated != ZOOM_DEFAULT) {
+                buttonSliderSettings1.setDisplayState(buttonSliderSettings1.getDisplayState() + 1);
+            }
+            if (!freeCamUpdated) {
+                if (xRotUpdated != XROT_DEFAULT) {
+                    buttonSliderSettings2.setDisplayState(buttonSliderSettings2.getDisplayState() + 1);
+                }
+                if (yRotUpdated != YROT_DEFAULT) {
+                    buttonSliderSettings3.setDisplayState(buttonSliderSettings3.getDisplayState() + 1);
+                }
+            }
         }
     }
 
@@ -552,6 +605,11 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         }
         if (!this.buttonCancel.isMouseOver()) {
             this.ovh.updateFromGui(this.zoomUpdated, this.xRotUpdated, this.yRotUpdated, this.freeCamUpdated, this.clipUpdated, this.textIsActive);
+        }
+        if (buttonSliderSettings1.getDisplayState() == 1) {
+            buttonSliderSettings1.setDisplayState(buttonSliderSettings1.getDisplayState() + 1);
+            buttonSliderSettings2.setDisplayState(buttonSliderSettings2.getDisplayState() + 1);
+            buttonSliderSettings3.setDisplayState(buttonSliderSettings3.getDisplayState() + 1);
         }
     }
 

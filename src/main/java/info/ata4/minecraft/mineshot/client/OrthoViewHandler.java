@@ -43,9 +43,12 @@ import static org.lwjgl.opengl.GL11.GL_PROJECTION;
  */
 public class OrthoViewHandler implements PrivateAccessor {
 
+    private static final float ZOOM_DEFAULT = 8f;
     private static final float ZOOM_STEP = 0.5f;
     private static final float ZOOM_MIN = 0.5f;
     private static final float ZOOM_MAX = 512f;
+    private static final float XROT_DEFAULT = 30f;
+    private static final float YROT_DEFAULT = 315f;
     private static final float ROTATE_STEP = 15f;
     private static final float ROTATE_SPEED = 4f;
     private static final float SECONDS_PER_TICK = 1f/20f;
@@ -95,14 +98,14 @@ public class OrthoViewHandler implements PrivateAccessor {
         ClientRegistry.registerKeyBinding(keyRotateDown);
         
         reset();
+        zoom = ZOOM_DEFAULT;
+        xRot = XROT_DEFAULT;
+        yRot = YROT_DEFAULT;
     }
  
     private void reset() {
         freeCam = false;
         clip = false;
-        zoom = 8;
-        xRot = 30;
-        yRot = 315;
         tick = 0;
         tickPrevious = 0;
         preset = 0;
@@ -148,10 +151,6 @@ public class OrthoViewHandler implements PrivateAccessor {
         }
     }
     
-    public boolean modifierKeyPressed() {
-        return GuiScreen.isCtrlKeyDown(); // Cmd instead of Ctrl on Mac
-    }
-    
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
         if (keyToggle.isKeyDown()) {
@@ -160,9 +159,9 @@ public class OrthoViewHandler implements PrivateAccessor {
             // snap to preset depending on current values, doesn't trigger if a preset is already set, ignores presets using xRot != 0
             // change counter, direction depends on modifier key, includes checks to ensure array angles doesn't run out of bounds
             if (yRot / 90f - Math.floor(yRot / 90f) > 0 || xRot / 90f - Math.floor(xRot / 90f) > 0) {
-                preset = modifierKeyPressed() ? ((int) Math.floor(yRot / 90f) % 4 + 4) % 4 : ((int) Math.ceil(yRot / 90f) % 4 + 4) % 4;
+                preset = GuiScreen.isCtrlKeyDown() ? ((int) Math.floor(yRot / 90f) % 4 + 4) % 4 : ((int) Math.ceil(yRot / 90f) % 4 + 4) % 4;
             } else {
-                preset = modifierKeyPressed() ? ((preset - 1) % 6 + 6) % 6 : (preset + 1) % 6;
+                preset = GuiScreen.isCtrlKeyDown() ? ((preset - 1) % 6 + 6) % 6 : (preset + 1) % 6;
             }
             xRot = angles[preset][0] * 90f;
             yRot = angles[preset][1] * 90f;
@@ -173,7 +172,7 @@ public class OrthoViewHandler implements PrivateAccessor {
 
         // snap values to step units
         // note: the smooth controls are handled in onFogDensity, since they need to be executed on every frame
-        if (modifierKeyPressed()) {
+        if (GuiScreen.isCtrlKeyDown()) {
             updateZoomAndRotation(1);
 
             xRot = Math.round(xRot / ROTATE_STEP) * ROTATE_STEP;
@@ -233,7 +232,10 @@ public class OrthoViewHandler implements PrivateAccessor {
      */
    @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload evt) {
-        disable();
+       zoom = ZOOM_DEFAULT;
+       xRot = XROT_DEFAULT;
+       yRot = YROT_DEFAULT;
+       disable();
     }
     
     @SubscribeEvent
@@ -243,7 +245,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         }
         
         // update zoom and rotation
-        if (!modifierKeyPressed()) {
+        if (!GuiScreen.isCtrlKeyDown()) {
             int ticksElapsed = tick - tickPrevious;
             double partial = evt.getRenderPartialTicks();
             double elapsed = ticksElapsed + (partial - partialPrevious);
