@@ -70,7 +70,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
 
     private boolean textIsActive;
     private boolean focusIsActive;
-    private boolean mouseOverButton;
     private boolean mouseNotOverButton;
     private boolean wasTextZoomFocused;
     private boolean wasTextXRotFocused;
@@ -151,11 +150,11 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         buttonList.add(buttonSliderPlus2);
         buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4, 12, 14, 16, 13, 15, 17}, false);
         buttonList.add(buttonSliderPlus3);
-        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3, 12, 14, 16, 13, 15, 17}, false);
+        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3, 18, 20, 22, 19, 21, 23}, false);
         buttonList.add(buttonSliderMinus1);
-        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3, 12, 14, 16, 13, 15, 17}, false);
+        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3, 18, 20, 22, 19, 21, 23}, false);
         buttonList.add(buttonSliderMinus2);
-        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3, 12, 14, 16, 13, 15, 17}, false);
+        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3, 18, 20, 22, 19, 21, 23}, false);
         buttonList.add(buttonSliderMinus3);
 
         buttonTextFocus1 = new GuiIconButton(26, width/2+159, height/6+20, new int[] {5, 6}, false);
@@ -282,6 +281,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         mouseOverSliderMinus1 = buttonSliderMinus1.isMouseOver() && buttonSliderMinus1.enabled;
         mouseOverSliderMinus2 = buttonSliderMinus2.isMouseOver() && buttonSliderMinus2.enabled;
         mouseOverSliderMinus3 = buttonSliderMinus3.isMouseOver() && buttonSliderMinus3.enabled;
+        /**
         int increment = 1;
         if (GuiScreen.isShiftKeyDown()) {
             increment = 2;
@@ -310,7 +310,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             buttonSliderMinus1.setDisplayState(0);
             buttonSliderMinus2.setDisplayState(0);
             buttonSliderMinus3.setDisplayState(0);
-        }
+        } */
     }
 
     /**
@@ -665,7 +665,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         boolean mouseOverTextMinus = mouseOverTextMinus1 || mouseOverTextMinus2 || mouseOverTextMinus3;
         boolean textBoxFocused = textIsActive && (textZoom.isFocused() || textXRot.isFocused() || textYRot.isFocused());
         mouseNotOverButton = GuiScreen.isCtrlKeyDown() && !textBoxFocused && !mouseOverSliderPlus && !mouseOverSliderMinus && !mouseOverTextPlus && !mouseOverTextMinus;
-        mouseOverButton = mouseOverSliderPlus || mouseOverSliderMinus || mouseOverTextPlus || mouseOverTextMinus;
 
         if (textIsActive) {
             textZoom.textboxKeyTyped(typedChar, keyCode);

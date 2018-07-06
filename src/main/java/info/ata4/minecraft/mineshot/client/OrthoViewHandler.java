@@ -20,12 +20,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -157,7 +155,14 @@ public class OrthoViewHandler implements PrivateAccessor {
     
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent evt) {
-        if (keyToggle.isKeyDown()) {
+        if (GuiScreen.isCtrlKeyDown() && keyToggle.isKeyDown() && !freeCam) {
+            zoom = ZOOM_DEFAULT;
+            xRot = XROT_DEFAULT;
+            yRot = YROT_DEFAULT;
+            if (!enabled) {
+                toggle();
+            }
+        } else if (keyToggle.isKeyDown()) {
             toggle();
         } else if (keyPreset.isKeyDown() && !freeCam && enabled) {
             // snap to preset depending on current values, doesn't trigger if a preset is already set, ignores presets using xRot != 0
@@ -316,8 +321,8 @@ public class OrthoViewHandler implements PrivateAccessor {
         GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.loadIdentity();
 
-        // + 0.9 so the camera is centered on the player and not on its feet
-        Projection.ortho(-width, width, -height + 0.9f, height + 0.9f, clip ? 0 : -9999, 9999);
+        // + 0.9 so the camera is centered on the player and not on its feet, but has to be + 0 for top / bottom view to be centered
+        Projection.ortho(-width, width, -height + MathHelper.cos((float) Math.toRadians(2 * xRot)) * 0.45f + 0.45f, height + MathHelper.cos((float) Math.toRadians(2 * xRot)) * 0.45f + 0.45f, clip ? 0 : -9999, 9999);
         
         // override camera view matrix
         GlStateManager.matrixMode(GL_MODELVIEW);
