@@ -44,7 +44,7 @@ public class GuiIconButton extends GuiButton
             displayState = displayState % iconId.length;
             hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int i = this.getHoverState(this.hovered);
-            this.drawTexturedModalRect(this.x, this.y, Math.abs(iconId[displayState]) * 20, i * 20, this.width, this.height);
+            this.drawTexturedModalRect(this.x, this.y, Math.abs(iconId[displayState] % 12) * 20, i * 20 + 60 * (iconId[displayState] / 12), this.width, this.height);
         }
     }
 

@@ -20,12 +20,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
@@ -204,17 +208,17 @@ public class OrthoViewHandler implements PrivateAccessor {
         }
 
         if (keyRotateLeft.isKeyDown()) {
-            yRot += ROTATE_STEP * multi;
+            yRot += (int) fixValue(zoom, 8f, 32f) * multi;
         }
         if (keyRotateRight.isKeyDown()) {
-            yRot -= ROTATE_STEP * multi;
+            yRot -= (int) fixValue(zoom, 8f, 32f) * multi;
         }
 
         if (keyRotateUp.isKeyDown()) {
-            xRot += ROTATE_STEP * multi;
+            xRot += (int) fixValue(zoom, 8f, 32f) * multi;
         }
         if (keyRotateDown.isKeyDown()) {
-            xRot -= ROTATE_STEP * multi;
+            xRot -= (int) fixValue(zoom, 8f, 32f) * multi;
         }
     }
     
@@ -228,14 +232,53 @@ public class OrthoViewHandler implements PrivateAccessor {
     }
 
     /**
-     * Disable when leaving the world or changing dimensions.
+     * Cancels rendering of most parts of the game overlay when camera mode is active.
+     */
+    @SubscribeEvent
+    public void onRenderGameOverlay(RenderGameOverlayEvent.Pre evt) {
+        boolean requiredEvents = evt.getType() == RenderGameOverlayEvent.ElementType.TEXT || evt.getType() == RenderGameOverlayEvent.ElementType.DEBUG || evt.getType() == RenderGameOverlayEvent.ElementType.FPS_GRAPH || evt.getType() == RenderGameOverlayEvent.ElementType.CHAT;
+        if (!requiredEvents && enabled && evt.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+            evt.setCanceled(true);
+        }
+    }
+
+    /**
+     * Cancels rendering of the player hand when camera mode is active.
+     */
+    @SubscribeEvent
+    public void onRenderHand(RenderHandEvent evt) {
+        if (enabled) {
+            evt.setCanceled(true);
+        }
+    }
+
+    /**
+     * Cancels highlighting of focused block when camera mode is active.
+     */
+    @SubscribeEvent
+    public void onDrawBlockHighlight(DrawBlockHighlightEvent evt) {
+        if (enabled) {
+            evt.setCanceled(true);
+        }
+    }
+
+    /**
+     * Disable and reset when leaving the world.
      */
    @SubscribeEvent
-    public void onWorldUnload(WorldEvent.Unload evt) {
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent evt) {
        zoom = ZOOM_DEFAULT;
        xRot = XROT_DEFAULT;
        yRot = YROT_DEFAULT;
        disable();
+    }
+
+    /**
+     * Disable when changing dimensions.
+     */
+    @SubscribeEvent
+    public void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent evt) {
+        disable();
     }
     
     @SubscribeEvent
@@ -273,7 +316,8 @@ public class OrthoViewHandler implements PrivateAccessor {
         GlStateManager.matrixMode(GL_PROJECTION);
         GlStateManager.loadIdentity();
 
-        Projection.ortho(-width, width, -height, height, clip ? 0 : -9999, 9999);
+        // + 0.9 so the camera is centered on the player and not on its feet
+        Projection.ortho(-width, width, -height + 0.9f, height + 0.9f, clip ? 0 : -9999, 9999);
         
         // override camera view matrix
         GlStateManager.matrixMode(GL_MODELVIEW);
@@ -299,8 +343,9 @@ public class OrthoViewHandler implements PrivateAccessor {
     @SubscribeEvent
     public void onTextRender(RenderGameOverlayEvent.Text evt)
     {
-        if (evt.getType() != RenderGameOverlayEvent.ElementType.TEXT)
+        if (evt.getType() != RenderGameOverlayEvent.ElementType.TEXT) {
             return;
+        }
 
         valueDisplay.setRoundingMode(RoundingMode.HALF_UP);
 
