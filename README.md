@@ -46,17 +46,19 @@ The following controls can be switched to work in steps by holding down the cont
  - Down: Rotate down
  
 A major part of the orthographic camera is its GUI which allows for very precise configuartion and has additional options available. The GUI is launched by pressing **F8**.
+
+![2018-07-07_16 02 52](https://user-images.githubusercontent.com/28218241/42411888-ca17d5be-8204-11e8-860d-1d8d32a0c47c.png)
  
 Settings can be configured through input fields available in two different modes, either by using sliders or by typing values into text boxes. The mode can be switched using the arrow buttons on top.
 
 Each input field has two buttons to increase or decrease the current value in steps. The default step value can be altered by holding certain keys while clicking on a button. The current step value is displayed as a tooltip.
 
- - Default: *1*
- - Control: *0.1*
- - Shift: *10*
- - Control + Shift: *0.01*
- - Alt: *100*
- - Control + Alt: *0.001*
+ - Default: 1
+ - Control: 0.1
+ - Shift: 10
+ - Control + Shift: 0.01
+ - Alt: 100
+ - Control + Alt: 0.001
  
 The GUI also includes a focus mode which is activated by clicking a button featuring a magnifying glass next to any input field. This action will make everything apart from the corresponding input field vanish, providing a clear view of the current game setting.
 
