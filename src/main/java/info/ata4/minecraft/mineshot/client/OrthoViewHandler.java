@@ -73,6 +73,7 @@ public class OrthoViewHandler implements PrivateAccessor {
     private boolean clippingEnabled;
     
     private boolean enabled;
+    private boolean heldItemTooltipsSetting;
     private boolean freeCam;
     private boolean clip;
     private boolean textIsActive;
@@ -98,7 +99,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         ClientRegistry.registerKeyBinding(keyRotateRight);
         ClientRegistry.registerKeyBinding(keyRotateUp);
         ClientRegistry.registerKeyBinding(keyRotateDown);
-        
+        heldItemTooltipsSetting = mc.gameSettings.heldItemTooltips;
         reset();
         zoom = ZOOM_DEFAULT;
         xRot = XROT_DEFAULT;
@@ -133,7 +134,7 @@ public class OrthoViewHandler implements PrivateAccessor {
             clippingHelper.setEnabled(false);
             reset();
         }
-        
+        mc.gameSettings.heldItemTooltips = false;
         enabled = true;
     }
     
@@ -141,7 +142,7 @@ public class OrthoViewHandler implements PrivateAccessor {
         if (enabled) {
             clippingHelper.setEnabled(clippingEnabled);
         }
-        
+        mc.gameSettings.heldItemTooltips = heldItemTooltipsSetting;
         enabled = false;
     }
 
@@ -351,8 +352,6 @@ public class OrthoViewHandler implements PrivateAccessor {
         if (evt.getType() != RenderGameOverlayEvent.ElementType.TEXT) {
             return;
         }
-
-        valueDisplay.setRoundingMode(RoundingMode.HALF_UP);
 
         if (mc.gameSettings.showDebugInfo && enabled) {
             evt.getRight().add("");

@@ -70,7 +70,9 @@ public class MineshotConfigGuiFactory implements IModGuiFactory {
             @Override
             public void onGuiClosed() {
                 super.onGuiClosed();
-                config.save();
+                if (config.hasChanged()) {
+                    config.save();
+                }
             }
         };
     }

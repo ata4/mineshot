@@ -10,8 +10,9 @@ import net.minecraft.util.text.*;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 
 public class GuiCamera extends GuiScreen implements GuiResponder {
 
@@ -56,6 +57,7 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private OrthoViewHandler ovh;
 
     private final DecimalFormat valueDisplay = new DecimalFormat("0.000");
+    private final DecimalFormat incrementerDisplay = new DecimalFormat("0.###");
 
     private boolean freeCamUpdated;
     private final boolean freeCam;
@@ -74,12 +76,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     private boolean wasTextZoomFocused;
     private boolean wasTextXRotFocused;
     private boolean wasTextYRotFocused;
-    private boolean mouseOverSliderPlus1;
-    private boolean mouseOverSliderPlus2;
-    private boolean mouseOverSliderPlus3;
-    private boolean mouseOverSliderMinus1;
-    private boolean mouseOverSliderMinus2;
-    private boolean mouseOverSliderMinus3;
 
     private final int[] buttonsSliderView = {10, 11, 12, 30, 31, 32, 33, 34, 35, 36, 37, 38};
     private final int[] buttonsTextView = {20, 21, 22, 23, 24, 25, 26, 27, 28};
@@ -116,8 +112,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
      */
     @Override
     public void initGui() {
-        valueDisplay.setRoundingMode(RoundingMode.HALF_UP);
-
         buttonCancel = new GuiButton(0, width/2-103, height/6+160, 103, 20, I18n.format("gui.cancel")); //for whatever eason width needs to be -99 and not -100
         buttonList.add(buttonCancel);
         GuiButton buttonDone = new GuiButton(1, width/2+2, height/6+160, 103, 20, I18n.format("gui.done"));
@@ -144,17 +138,17 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         buttonTextMinus3 = new GuiIconButton(25, width/2+136, height/6+80, new int[] {-2}, false);
         buttonList.add(buttonTextMinus3);
 
-        buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+20, new int[] {4, 12, 14, 16, 13, 15, 17}, false);
+        buttonSliderPlus1 = new GuiIconButton(30, width/2+136, height/6+20, new int[] {4}, false);
         buttonList.add(buttonSliderPlus1);
-        buttonSliderPlus2 = new GuiIconButton(32, width/2+136, height/6+45, new int[] {4, 12, 14, 16, 13, 15, 17}, false);
+        buttonSliderPlus2 = new GuiIconButton(32, width/2+136, height/6+45, new int[] {4}, false);
         buttonList.add(buttonSliderPlus2);
-        buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4, 12, 14, 16, 13, 15, 17}, false);
+        buttonSliderPlus3 = new GuiIconButton(34, width/2+136, height/6+70, new int[] {4}, false);
         buttonList.add(buttonSliderPlus3);
-        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3, 18, 20, 22, 19, 21, 23}, false);
+        buttonSliderMinus1 = new GuiIconButton(31, width/2-155, height/6+20, new int[] {3}, false);
         buttonList.add(buttonSliderMinus1);
-        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3, 18, 20, 22, 19, 21, 23}, false);
+        buttonSliderMinus2 = new GuiIconButton(33, width/2-155, height/6+45, new int[] {3}, false);
         buttonList.add(buttonSliderMinus2);
-        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3, 18, 20, 22, 19, 21, 23}, false);
+        buttonSliderMinus3 = new GuiIconButton(35, width/2-155, height/6+70, new int[] {3}, false);
         buttonList.add(buttonSliderMinus3);
 
         buttonTextFocus1 = new GuiIconButton(26, width/2+159, height/6+20, new int[] {5, 6}, false);
@@ -225,7 +219,6 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         }
         ctrlKeyAction();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        showIncrements();
         if (textIsActive && focusIsActive) {
             if (buttonTextFocus1.getDisplayState() == 1) {
                 textZoom.drawTextBox();
@@ -242,8 +235,23 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
             textXRot.drawTextBox();
             textYRot.drawTextBox();
         }
+        drawTextOverButton("+" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonSliderPlus1);
+        drawTextOverButton("+" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonSliderPlus2);
+        drawTextOverButton("+" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonSliderPlus3);
+        drawTextOverButton("-" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonSliderMinus1);
+        drawTextOverButton("-" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonSliderMinus2);
+        drawTextOverButton("-" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonSliderMinus3);
+        drawTextOverButton("+" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonTextPlus1);
+        drawTextOverButton("+" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonTextPlus2);
+        drawTextOverButton("+" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonTextPlus3);
+        drawTextOverButton("-" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonTextMinus1);
+        drawTextOverButton("-" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonTextMinus2);
+        drawTextOverButton("-" + incrementerDisplay.format(getIncrement(false)), mouseX, mouseY, buttonTextMinus3);
     }
 
+    /**
+     * Show reset buttons when Ctrl is pressed.
+     */
     private void ctrlKeyAction() {
         boolean resetAlreadyActive = buttonReset1.visible || buttonReset2.visible || buttonReset3.visible;
         if (mouseNotOverButton) {
@@ -274,43 +282,13 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
 
     }
 
-    private void showIncrements() {
-        mouseOverSliderPlus1 = buttonSliderPlus1.isMouseOver() && buttonSliderPlus1.enabled;
-        mouseOverSliderPlus2 = buttonSliderPlus2.isMouseOver() && buttonSliderPlus2.enabled;
-        mouseOverSliderPlus3 = buttonSliderPlus3.isMouseOver() && buttonSliderPlus3.enabled;
-        mouseOverSliderMinus1 = buttonSliderMinus1.isMouseOver() && buttonSliderMinus1.enabled;
-        mouseOverSliderMinus2 = buttonSliderMinus2.isMouseOver() && buttonSliderMinus2.enabled;
-        mouseOverSliderMinus3 = buttonSliderMinus3.isMouseOver() && buttonSliderMinus3.enabled;
-        /**
-        int increment = 1;
-        if (GuiScreen.isShiftKeyDown()) {
-            increment = 2;
-        } else if (GuiScreen.isAltKeyDown()) {
-            increment = 3;
+    /**
+     * Draws a List of strings as a tooltip over a button. Every entry is drawn on a seperate line.
+     */
+    private void drawTextOverButton(String text, int mouseX, int mouseY, GuiButton button) {
+        if (button.isMouseOver() && button.enabled && !text.isEmpty()) {
+            drawHoveringText(Arrays.asList(text), mouseX, mouseY);
         }
-        if (GuiScreen.isCtrlKeyDown()) {
-            increment += 3;
-        }
-        if (mouseOverSliderPlus1) {
-            buttonSliderPlus1.setDisplayState(increment);
-        } else if (mouseOverSliderPlus2) {
-            buttonSliderPlus2.setDisplayState(increment);
-        } else if (mouseOverSliderPlus3) {
-            buttonSliderPlus3.setDisplayState(increment);
-        } else if (mouseOverSliderMinus1) {
-            buttonSliderMinus1.setDisplayState(increment);
-        } else if (mouseOverSliderMinus2) {
-            buttonSliderMinus2.setDisplayState(increment);
-        } else if (mouseOverSliderMinus3) {
-            buttonSliderMinus3.setDisplayState(increment);
-        } else {
-            buttonSliderPlus1.setDisplayState(0);
-            buttonSliderPlus2.setDisplayState(0);
-            buttonSliderPlus3.setDisplayState(0);
-            buttonSliderMinus1.setDisplayState(0);
-            buttonSliderMinus2.setDisplayState(0);
-            buttonSliderMinus3.setDisplayState(0);
-        } */
     }
 
     /**
@@ -480,29 +458,29 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
                 }
                 break;
             case 20: // plus text zoom
-                zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated) + getIncrement(), ZOOM_MIN, ZOOM_MAX);
+                zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated) + getIncrement(true), ZOOM_MIN, ZOOM_MAX);
                 textZoom.setText(valueDisplay.format(zoomUpdated));
                 checkZoomButtonsEnabled();
                 break;
             case 21: // minus text zoom
-                zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated) - getIncrement(), ZOOM_MIN, ZOOM_MAX);
+                zoomUpdated = ovh.fixValue(textZoom.getTextAsFloat(zoomUpdated) - getIncrement(true), ZOOM_MIN, ZOOM_MAX);
                 textZoom.setText(valueDisplay.format(zoomUpdated));
                 checkZoomButtonsEnabled();
                 break;
             case 22: // plus text xRot
-                xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated) + getIncrement());
+                xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated) + getIncrement(true));
                 textXRot.setText(valueDisplay.format(xRotUpdated));
                 break;
             case 23: // minus text xRot
-                xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated) - getIncrement());
+                xRotUpdated = ovh.fixValue(textXRot.getTextAsFloat(xRotUpdated) - getIncrement(true));
                 textXRot.setText(valueDisplay.format(xRotUpdated));
                 break;
             case 24: // plus text yRot
-                yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) + getIncrement());
+                yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) + getIncrement(true));
                 textYRot.setText(valueDisplay.format(yRotUpdated));
                 break;
             case 25: // minus text yRot
-                yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) - getIncrement());
+                yRotUpdated = ovh.fixValue(textYRot.getTextAsFloat(yRotUpdated) - getIncrement(true));
                 textYRot.setText(valueDisplay.format(yRotUpdated));
                 break;
             case 26: // focus text zoom
@@ -515,29 +493,29 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
                 activateFocus(buttonTextFocus3, true);
                 break;
             case 30: // plus slider zoom
-                zoomUpdated = ovh.fixValue(zoomUpdated + getIncrement(), ZOOM_MIN, ZOOM_MAX);
+                zoomUpdated = ovh.fixValue(zoomUpdated + getIncrement(true), ZOOM_MIN, ZOOM_MAX);
                 sliderZoom.setSliderValue(zoomUpdated, false);
                 checkZoomButtonsEnabled();
                 break;
             case 31: // minus slider zoom
-                zoomUpdated = ovh.fixValue(zoomUpdated - getIncrement(), ZOOM_MIN, ZOOM_MAX);
+                zoomUpdated = ovh.fixValue(zoomUpdated - getIncrement(true), ZOOM_MIN, ZOOM_MAX);
                 sliderZoom.setSliderValue(zoomUpdated, false);
                 checkZoomButtonsEnabled();
                 break;
             case 32: // plus slider xRot
-                xRotUpdated = ovh.fixValue(xRotUpdated + getIncrement());
+                xRotUpdated = ovh.fixValue(xRotUpdated + getIncrement(true));
                 sliderXRot.setSliderValue(xRotUpdated, false);
                 break;
             case 33: // minus slider xRot
-                xRotUpdated = ovh.fixValue(xRotUpdated - getIncrement());
+                xRotUpdated = ovh.fixValue(xRotUpdated - getIncrement(true));
                 sliderXRot.setSliderValue(xRotUpdated, false);
                 break;
             case 34: // plus slider yRot
-                yRotUpdated = ovh.fixValue(yRotUpdated + getIncrement());
+                yRotUpdated = ovh.fixValue(yRotUpdated + getIncrement(true));
                 sliderYRot.setSliderValue(yRotUpdated, false);
                 break;
             case 35: // minus slider yRot
-                yRotUpdated = ovh.fixValue(yRotUpdated - getIncrement());
+                yRotUpdated = ovh.fixValue(yRotUpdated - getIncrement(true));
                 sliderYRot.setSliderValue(yRotUpdated, false);
                 break;
             case 36: // focus slider zoom
@@ -552,15 +530,19 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         }
     }
 
-    private float getIncrement() {
+    /**
+     * Get current increment from pressed buttons.
+     */
+    private float getIncrement(boolean reset) {
         float i = 0;
         if (GuiScreen.isShiftKeyDown()) {
             i = 1;
-        } else if (GuiScreen.isAltKeyDown()) {
+        }
+        if (GuiScreen.isAltKeyDown()) {
             i = 2;
         }
         if (GuiScreen.isCtrlKeyDown()) {
-            if (mouseNotOverButton) {
+            if (mouseNotOverButton && reset) {
                 mouseNotOverButton = false;
             }
             return (float) Math.pow(10, -i - 1);
@@ -569,6 +551,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         }
     }
 
+    /**
+     * Disable all gui elements but a single slider / text box and its corresponding controls.
+     */
     private void activateFocus(GuiIconButton pressedButton, boolean isTextMode) {
         focusIsActive = !focusIsActive;
         enableSingleView(isTextMode ? buttonsTextView : buttonsSliderView, !focusIsActive, pressedButton.id);
@@ -609,6 +594,9 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
         wasTextYRotFocused = textYRot.isFocused();
     }
 
+    /**
+     * Set slider / text box content to current internal values.
+     */
     private void updateContainers() {
         if (textIsActive) {
             textZoom.setText(valueDisplay.format(zoomUpdated));
@@ -653,6 +641,12 @@ public class GuiCamera extends GuiScreen implements GuiResponder {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+        boolean mouseOverSliderPlus1 = buttonSliderPlus1.isMouseOver() && buttonSliderPlus1.enabled;
+        boolean mouseOverSliderPlus2 = buttonSliderPlus2.isMouseOver() && buttonSliderPlus2.enabled;
+        boolean mouseOverSliderPlus3 = buttonSliderPlus3.isMouseOver() && buttonSliderPlus3.enabled;
+        boolean mouseOverSliderMinus1 = buttonSliderMinus1.isMouseOver() && buttonSliderMinus1.enabled;
+        boolean mouseOverSliderMinus2 = buttonSliderMinus2.isMouseOver() && buttonSliderMinus2.enabled;
+        boolean mouseOverSliderMinus3 = buttonSliderMinus3.isMouseOver() && buttonSliderMinus3.enabled;
         boolean mouseOverTextPlus1 = buttonTextPlus1.isMouseOver() && buttonTextPlus1.enabled;
         boolean mouseOverTextPlus2 = buttonTextPlus2.isMouseOver() && buttonTextPlus2.enabled;
         boolean mouseOverTextPlus3 = buttonTextPlus3.isMouseOver() && buttonTextPlus3.enabled;
