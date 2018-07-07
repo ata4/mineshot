@@ -16,9 +16,9 @@ Some scenarios and usages for such images could be:
  - Mob and block images for the Minecraft Wiki
  - ... you name it
 
-## Usage
+## Huge Screenshot
 
-To capture a big screenshot, simply press **F9**. The key can be configured in the key bindings menu.
+To capture a huge screenshot, simply press **F9**. The key can be configured in the key bindings menu.
 
 During capture, the game may be unresponsive for a few seconds, depending on how big the screenshot is.
 
@@ -28,21 +28,42 @@ Also note that when tiled rendering is disabled, the maximum screenshot size hea
 
 If you use lots of shaders, it's not recommended to enable tiled rendering, since it may cause seams between the individual tiles or other major glitches.
 
-To enable or disable the orthographic camera press **F7**. There are multiple settings which are configured by default as follows. There is a modifier key which is defined as *Control* on Windows and Linux and as *Command* on Mac.
+## Orthographic Camera
 
- - Semicolon: Let the camera follow the view of the player
- - Apostrophe: Switch [clipping](https://en.wikipedia.org/wiki/Clipping_(computer_graphics)) distance
- - Left Bracket: Select next preset
- - Modifier + Left Bracket: Select previous preset
- 
-The camera view can be further configured using these keys. They can be switched to work in steps by holding the modifier key at the same time:
+To enable or disable the orthographic camera press **F7**. There are multiple settings which are by default configured as follows. *Note:* Instead of control the command key is used on Mac.
+
+ - Control + F7: Reset orthographic camera
+ - Backslash: Select next preset
+ - Control + Backslash: Select previous preset
+
+The following controls can be switched to work in steps by holding down the control key at the same time:
 
  - Right Bracket: Zoom in
- - Backslash: Zoom out
+ - Left Bracket: Zoom out
  - Left: Rotate left
  - Right: Rotate right
  - Up: Rotate up
  - Down: Rotate down
+ 
+A major part of the orthographic camera is its GUI which allows for very precise configuartion and has additional options available. The GUI is launched by pressing **F8**.
+ 
+Settings can be configured through input fields available in two different modes, either by using sliders or by typing values into text boxes. The mode can be switched using the arrow buttons on top.
+
+Each input field has two buttons to increase or decrease the current value in steps. The default step value can be altered by holding certain keys while clicking on a button. The current step value is displayed as a tooltip.
+
+ - Default: *1*
+ - Control: *0.1*
+ - Shift: *10*
+ - Control + Shift: *0.01*
+ - Alt: *100*
+ - Control + Alt: *0.001*
+ 
+The GUI also includes a focus mode which is activated by clicking a button featuring a magnifying glass next to any input field. This action will make everything apart from the corresponding input field vanish, providing a clear view of the current game setting.
+
+On the bottom of the GUI are two additional options for configuring the orthographic camera:
+
+ - Follow View: Sets camera rotation to follow the view of the player
+ - Clipping: Switch [clipping](https://en.wikipedia.org/wiki/Clipping_(computer_graphics)) distance
 
 ## Download
 
