@@ -66,6 +66,8 @@ On the bottom of the GUI are two additional options for configuring the orthogra
 
  - Follow View: Sets camera rotation to follow the view of the player
  - Clipping: Switch [clipping](https://en.wikipedia.org/wiki/Clipping_(computer_graphics)) distance
+ 
+Each input field can be reset to its default value through clicking the reset button on its left which appears while holding down the control key.
 
 ## Download
 
