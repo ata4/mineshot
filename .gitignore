@@ -44,3 +44,9 @@ hs_err_pid*
 /bin/
 /private/
 /minecraft/
+.idea/
+run/
+.DS_Store
+mineshot.iml
+gradle.properties
+classes/

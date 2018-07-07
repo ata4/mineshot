@@ -1,0 +1,37 @@
+# keys
+key.categories.mineshot=Mineshot
+
+key.mineshot.capture=Prendre une énorme capture d'écran
+key.mineshot.ortho.toggle=Caméra-mode
+key.mineshot.ortho.zoom_in=Caméra-zoom avant
+key.mineshot.ortho.zoom_out=Caméra-zoom arriére
+key.mineshot.ortho.rotate_left=Caméra-tourner à gauche
+key.mineshot.ortho.rotate_right=Caméra-tourner à droite
+key.mineshot.ortho.rotate_up=Caméra-tourner vers le haut
+key.mineshot.ortho.rotate_down=Caméra-tourner vers le bas
+key.mineshot.ortho.preset=Caméra-changer pré-reglage
+key.mineshot.ortho.gui=Caméra-configuration
+
+# message
+mineshot.ortho.mp=La camera n'est pas disponible en multijoueur
+
+# gui
+mineshot.gui.title=Configurer la caméra
+mineshot.gui.zoom=Zoom
+mineshot.gui.xrot=Rotation X
+mineshot.gui.yrot=Rotation Y
+mineshot.gui.view=Suivi de la vue
+mineshot.gui.clipping=Clipping
+
+# config
+mineshot.config.captureWidth=Largeur
+mineshot.config.captureWidth.tooltip=Largeur de la capture d'écran
+
+mineshot.config.captureHeight=Hauteur
+mineshot.config.captureHeight.tooltip=Hauteur de la capture d'écran
+
+mineshot.config.captureTiled=Rendu en mosaïque
+mineshot.config.captureTiled.tooltip=Compose les captures d'écran à partir de plusieurs captures d'écran plus petites. Cela permet de faire des captures d'écran beaucoup plus grandes que d'habitude, cela peut causer des problèmes avec les Shaders.
+
+mineshot.config.preloadChunks=Préchargement des chunks
+mineshot.config.preloadChunks.tooltip=Charge tous les chunks visibles avant de faire la capture d'écran.

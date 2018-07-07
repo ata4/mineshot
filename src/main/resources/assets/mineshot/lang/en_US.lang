@@ -5,16 +5,23 @@ key.mineshot.capture=Take Huge Screenshot
 key.mineshot.ortho.toggle=Camera Mode
 key.mineshot.ortho.zoom_in=Camera Zoom In
 key.mineshot.ortho.zoom_out=Camera Zoom Out
-key.mineshot.ortho.rotate_l=Camera Turn Left
-key.mineshot.ortho.rotate_r=Camera Turn Right
-key.mineshot.ortho.rotate_u=Camera Turn Up
-key.mineshot.ortho.rotate_d=Camera Turn Down
-key.mineshot.ortho.rotate_t=Camera Top View
-key.mineshot.ortho.rotate_f=Camera Front View
-key.mineshot.ortho.rotate_s=Camera Side View
-key.mineshot.ortho.clip=Camera Change Clipping
+key.mineshot.ortho.rotate_left=Camera Turn Left
+key.mineshot.ortho.rotate_right=Camera Turn Right
+key.mineshot.ortho.rotate_up=Camera Turn Up
+key.mineshot.ortho.rotate_down=Camera Turn Down
+key.mineshot.ortho.preset=Camera Switch Preset
+key.mineshot.ortho.gui=Camera Configuration
 
-mineshot.orthomp=Orthographic perspective not available in multiplayer
+# message
+mineshot.ortho.mp=Camera not available in multiplayer
+
+# gui
+mineshot.gui.title=Configure Camera
+mineshot.gui.zoom=Zoom
+mineshot.gui.xrot=X-Rotation
+mineshot.gui.yrot=Y-Rotation
+mineshot.gui.view=Follow View
+mineshot.gui.clipping=Clipping
 
 # config
 mineshot.config.captureWidth=Width

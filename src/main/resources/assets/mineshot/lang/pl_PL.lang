@@ -2,19 +2,26 @@
 key.categories.mineshot=Mineshot
 
 key.mineshot.capture=Zrób dużego screena
-key.mineshot.ortho.toggle=Zmiana trybu kamery
-key.mineshot.ortho.zoom_in=Powiększ
-key.mineshot.ortho.zoom_out=Zmniejsz
-key.mineshot.ortho.rotate_l=Obróć w prawo
-key.mineshot.ortho.rotate_r=Obróć w lewo
-key.mineshot.ortho.rotate_u=Obróć do góry
-key.mineshot.ortho.rotate_d=Obróć w dół
-key.mineshot.ortho.rotate_t=Widok z góry
-key.mineshot.ortho.rotate_f=Widok z przodu
-key.mineshot.ortho.rotate_s=Widok z boku
-key.mineshot.ortho.clip=Zmień wielkość kadru
+key.mineshot.ortho.toggle=Kamera Tryb
+key.mineshot.ortho.zoom_in=Kamera Pomniejsz
+key.mineshot.ortho.zoom_out=Kamera Zmniejsz
+key.mineshot.ortho.rotate_left=Kamera Obróć w prawo
+key.mineshot.ortho.rotate_right=Kamera Obróć w lewo
+key.mineshot.ortho.rotate_up=Kamera Obróć do góry
+key.mineshot.ortho.rotate_down=Kamera Obróć w dół
+key.mineshot.ortho.preset=Kamera Zmień preset
+key.mineshot.ortho.gui=Kamera Konfiguracja
 
-mineshot.orthomp=Rzut ortograficzny nie jest dostępny w multiplayer
+# message
+mineshot.ortho.mp=Kamera nie jest dostępny w multiplayer
+
+# gui
+mineshot.gui.title=Konfiguruj kamerę
+mineshot.gui.zoom=Zoom
+mineshot.gui.xrot=Rotacja w osi X
+mineshot.gui.yrot=Rotacja w osi Y
+mineshot.gui.view=Obserwuj widok
+mineshot.gui.clipping=Obcinanie
 
 # config
 mineshot.config.captureWidth=Szerokość
